@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Word Tangle — прототип (Jumble mobile)</title>
+<title>Word Tangle — Jumble mobile prototype</title>
 <style>
   :root{
     --bg:#f4ede0; --card:#fffdf8; --ink:#3a3226; --muted:#8a7d68;
@@ -132,9 +132,9 @@
 
   <!-- HOME -->
   <div class="screen active" id="home">
-    <div class="logo">WORD TANGLE<small>по мотивам Jumble · прототип</small></div>
+    <div class="logo">WORD TANGLE<small>inspired by Jumble · prototype</small></div>
     <div class="home-art">🧩</div>
-    <button class="btn" onclick="openMap()">ИГРАТЬ ▶</button>
+    <button class="btn" onclick="openMap()">PLAY ▶</button>
     <div class="row home-foot">
       <span class="pill">💰 <span id="homeCoins">250</span></span>
     </div>
@@ -143,7 +143,7 @@
   <!-- MAP -->
   <div class="screen" id="map">
     <div class="row"><button class="iconbtn" onclick="show('home')">←</button><div class="spacer"></div><span class="pill">💰 <span id="mapCoins">250</span></span></div>
-    <div class="maptitle">Тропа уровней</div>
+    <div class="maptitle">Level Trail</div>
     <div class="maparea" id="maparea"></div>
   </div>
 
@@ -153,7 +153,7 @@
       <button class="iconbtn" onclick="show('map')">←</button>
       <span class="pill">💰 <span id="gameCoins">250</span></span>
       <div class="spacer"></div>
-      <span class="progress" id="progress">Слово 1/1</span>
+      <span class="progress" id="progress">Word 1/1</span>
     </div>
     <div class="gamebody">
       <div class="solved-strip" id="solvedStrip"></div>
@@ -163,7 +163,7 @@
       <div class="pool" id="pool"></div>
       <div class="hintbar" id="hintbar"></div>
       <div class="controls">
-        <button class="btn ghost" onclick="doShuffle()">🔀 Перемешать</button>
+        <button class="btn ghost" onclick="doShuffle()">🔀 Shuffle</button>
       </div>
     </div>
     <div class="praise" id="praise"></div>
@@ -171,11 +171,11 @@
 
   <!-- WIN -->
   <div class="screen" id="win">
-    <div style="font-size:30px;font-weight:900;color:var(--accent)" id="winPraise">БЛЕСТЯЩЕ!</div>
+    <div style="font-size:30px;font-weight:900;color:var(--accent)" id="winPraise">BRILLIANT!</div>
     <div class="cartoon" id="winCartoon"></div>
     <div class="winans" id="winAnswer"></div>
     <div class="coinpop" id="winCoins">+4 💰</div>
-    <button class="btn" onclick="afterWin()" style="width:210px">ДАЛЕЕ ▶</button>
+    <button class="btn" onclick="afterWin()" style="width:210px">NEXT ▶</button>
   </div>
 
   <!-- CHEATS -->
@@ -214,7 +214,7 @@ function syncCoins(){ ['homeCoins','mapCoins','gameCoins'].forEach(id=>{const e=
 let G = null; // current level runtime
 
 const HINT_PRICES = { reveal:25, position:50, explain:40, solveword:120 };
-const PRAISES = ['ОТЛИЧНО!','БЛЕСТЯЩЕ!','ВЕЛИКОЛЕПНО!'];
+const PRAISES = ['GREAT!','BRILLIANT!','SPECTACULAR!'];
 
 /* ==== NAV ==== */
 function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
@@ -288,8 +288,8 @@ function renderMap(){
     if (done) inner = '<div class="stars"><i>★</i><i>★</i><i>★</i></div><span class="chk">✓</span>';
     else if (open) inner = String(l.id);
     else inner = '<span class="lk">🔒</span>';
-    inner += `<span class="vl">ур.${l.virtualLevel}</span>`;
-    if (isCurrent) inner += '<span class="play">▶ ИГРАТЬ</span>';
+    inner += `<span class="vl">lvl ${l.virtualLevel}</span>`;
+    if (isCurrent) inner += '<span class="play">▶ PLAY</span>';
     node.innerHTML = inner;
     if (open || done) node.onclick = () => startLevel(l.id);
     if (isCurrent || (l.id === save.unlockedMax)) currentEl = node;
@@ -335,8 +335,8 @@ function indexInAnswer(w,ch,poolIdx){ return -1; }
 
 function renderProgress(){
   const p = document.getElementById('progress');
-  if(G.phase==='words') p.textContent = `Слово ${G.wordIndex+1}/${G.L.words.length}`;
-  else p.textContent = 'ФИНАЛ';
+  if(G.phase==='words') p.textContent = `Word ${G.wordIndex+1}/${G.L.words.length}`;
+  else p.textContent = 'FINAL';
 }
 function renderSolved(){
   const s = document.getElementById('solvedStrip'); s.innerHTML='';
@@ -390,8 +390,8 @@ function renderPool(){
 }
 function renderHints(){
   const bar=document.getElementById('hintbar'); bar.innerHTML='';
-  const hints=[['💡 Открыть букву','reveal',hint_reveal],['🎯 Буква на позиции','position',hint_position],['✨ Решить слово','solveword',hint_solveword]];
-  if(G.phase==='answer') hints.splice(2,0,['❓ Объяснить шутку','explain',hint_explain]);
+  const hints=[['💡 Reveal letter','reveal',hint_reveal],['🎯 Letter in slot','position',hint_position],['✨ Solve word','solveword',hint_solveword]];
+  if(G.phase==='answer') hints.splice(2,0,['❓ Explain the joke','explain',hint_explain]);
   hints.forEach(([label,key,fn])=>{
     const b=document.createElement('button'); b.className='hintbtn';
     b.innerHTML=`${label} <span class="c">${HINT_PRICES[key]}💰</span>`;
@@ -417,7 +417,7 @@ function renderCartoon(el, L, teaser){
     el.innerHTML = `<img src="${img}" alt="cartoon">`;
     if(teaser) el.querySelector('img').style.filter = `blur(${teaserBlurPx()}px) saturate(.85)`;
   } else {
-    el.innerHTML = `<div class="ph"><div class="em">🎨</div><div>картинка уровня ${L.id}<br><small>(арт подставится build-скриптом)</small></div></div>`;
+    el.innerHTML = `<div class="ph"><div class="em">🎨</div><div>level ${L.id} image<br><small>(injected by build script)</small></div></div>`;
   }
   // speech bubble from prompt is baked into image; we also show caption in answer phase
 }
@@ -510,7 +510,7 @@ function doShuffle(){
 }
 
 /* ==== HINTS ==== */
-function pay(key){ if(save.coins < HINT_PRICES[key]){ alert('Недостаточно монет. Подсказки в прототипе можно взять читом «+1000 монет».'); return false; } save.coins-=HINT_PRICES[key]; persist(); return true; }
+function pay(key){ if(save.coins < HINT_PRICES[key]){ alert('Not enough coins. Use the CHEATS panel (top center) to add coins.'); return false; } save.coins-=HINT_PRICES[key]; persist(); return true; }
 function curSlots(){ return G.phase==='words'? G.slots : G.ansSlots; }
 function curPool(){ return G.phase==='words'? G.ansPool : G.ansPool; }
 function targetStr(){ return G.phase==='words'? G.L.words[G.wordIndex].answer : G.L.surprise.answer.join(''); }
@@ -525,7 +525,7 @@ function fillSlot(pos){
   return true;
 }
 function hint_reveal(){ if(!pay('reveal'))return; const empties=curSlots().map((s,i)=>s?null:i).filter(i=>i!==null); if(!empties.length)return; const pos=empties[Math.floor(Math.random()*empties.length)]; fillSlot(pos); renderSlots(); renderPool(); checkComplete(); }
-function hint_position(){ if(!pay('position'))return; alert('Тапни пустой слот — туда встанет верная буква.'); armPosition=true; }
+function hint_position(){ if(!pay('position'))return; alert('Tap an empty slot — the correct letter drops in.'); armPosition=true; }
 let armPosition=false;
 function hint_explain(){ if(!pay('explain'))return; alert('💡 '+G.L.surprise.explanation); }
 function hint_solveword(){ if(!pay('solveword'))return; curSlots().forEach((s,i)=>{ if(!s) fillSlot(i); }); renderSlots(); renderPool(); checkComplete(); }

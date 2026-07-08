@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UX-концепт: мобильная адаптация Jumble — Word Tangle</title>
+<style>
+  :root{
+    --paper:#F1EBDD; --card:#FBF8F1; --ink:#1B2430; --ink-2:#2A3541; --soft:#55606B;
+    --faint:#8A8574; --line:#DcD2BF; --teal:#1F6E63; --teal-d:#17544c; --amber:#E2853F;
+    --display:"Helvetica Neue",Arial,"Segoe UI",system-ui,sans-serif;
+    --body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:"SF Mono","Cascadia Code",Consolas,ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.65;
+    -webkit-font-smoothing:antialiased}
+  .topbar{position:sticky;top:0;z-index:10;background:rgba(241,235,221,.92);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);padding:11px 22px;display:flex;align-items:center;gap:14px}
+  .topbar a.back{font-family:var(--mono);font-size:12.5px;font-weight:700;color:var(--teal-d);
+    text-decoration:none;display:inline-flex;gap:6px;align-items:center}
+  .topbar a.back:hover{color:var(--teal)}
+  .topbar .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--soft);margin-left:auto}
+  .hero{max-width:800px;margin:0 auto;padding:44px 24px 6px}
+  .hero .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--teal);font-weight:600}
+  .hero h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,4.6vw,42px);
+    letter-spacing:-.02em;margin:12px 0 0;text-wrap:balance;line-height:1.05}
+  .article{max-width:760px;margin:0 auto;padding:22px 24px 90px}
+  .article>*:first-child{margin-top:0}
+  .article h2{font-family:var(--display);font-weight:800;font-size:25px;margin:40px 0 12px;
+    padding-top:18px;border-top:1px solid var(--line);letter-spacing:-.01em}
+  .article h3{font-family:var(--display);font-weight:700;font-size:19px;margin:26px 0 8px}
+  .article h4{font-family:var(--display);font-weight:700;font-size:16px;margin:20px 0 6px;color:var(--teal-d)}
+  .article p{margin:0 0 14px}
+  .article ul,.article ol{margin:0 0 15px;padding-left:22px}
+  .article li{margin:5px 0}
+  .article li>ul,.article li>ol{margin:6px 0}
+  .article a{color:var(--teal-d);text-underline-offset:3px}
+  .article strong{color:var(--ink);font-weight:700}
+  .article code{font-family:var(--mono);font-size:.88em;background:#ece2cd;padding:1px 6px;
+    border-radius:5px;color:#8a5a24;word-break:break-word}
+  .article pre{background:var(--ink);color:#EFE7D6;padding:16px 18px;border-radius:12px;
+    overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.55;margin:0 0 16px}
+  .article pre code{background:none;padding:0;color:inherit;font-size:inherit}
+  .article blockquote{border-left:3px solid var(--teal);background:var(--card);margin:0 0 15px;
+    padding:12px 16px;border-radius:0 10px 10px 0;color:var(--ink-2)}
+  .article blockquote p:last-child{margin:0}
+  .article hr{border:none;border-top:1px solid var(--line);margin:30px 0}
+  /* custom tables — same un-generic style as the deck */
+  .tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card);margin:0 0 18px}
+  table.tbl{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;min-width:520px}
+  table.tbl thead th{background:var(--ink);color:#EFE7D6;font-family:var(--mono);font-size:11px;
+    font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:11px 14px;text-align:left;white-space:nowrap}
+  table.tbl tbody td{padding:10px 14px;border-top:1px solid var(--line);font-size:13.5px;color:var(--ink-2);vertical-align:top}
+  table.tbl tbody tr:nth-child(even){background:rgba(31,110,99,.045)}
+  table.tbl tbody td code{background:#e4dcc8}
+  .docfoot{max-width:760px;margin:0 auto;padding:22px 24px 60px;border-top:1px solid var(--line);
+    color:var(--faint);font-size:13px}
+  .docfoot a{color:var(--teal-d)}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a class="back" href="https://elenarumiru.github.io/word-tangle/">← Word Tangle · case study</a>
+  <span class="lbl">UX и управление · концепт</span>
+</div>
+<header class="hero">
+  <div class="eyebrow">UX и управление · концепт</div>
+  <h1>UX-концепт: мобильная адаптация Jumble</h1>
+</header>
+<main class="article">
+
+<p>Deliverable фазы 1. Целевая платформа: смартфон, portrait, one-handed. Аудитория — casual<br />
+word-games (30+, «уютный» жанр без таймеров). Сессия: 1 уровень = 1–4 минуты. Контент уровней —<br />
+английский (слова и каламбуры); весь UI игры — английский; по-русски остаётся только панель читов (инструмент тестирования).</p>
+<p>Каждое решение помечено «<strong>Почему:</strong>» со ссылкой на research (<code>01-research/mobile-word-games-ux.md</code>,<br />
+<code>jumble-analysis.md</code>) или анатомию оригинала.</p>
+<hr />
+<h2>0. Три опоры адаптации (что мы НЕ ломаем)</h2>
+<ol>
+<li><strong>Двухфазность оригинала сохранена</strong>: сначала N слов-анаграмм → потом ответ-каламбур по карикатуре.<br />
+<strong>Почему:</strong> это встроенный ритм «разминка → кульминация» и то, что делает игру именно Jumble.<br />
+   Just Jumble выбросил фазу слов ради быстрого дофамина и получил главную претензию фанатов<br />
+   (research §1.1). Мы её оставляем, но адаптируем к экрану 6".</li>
+<li><strong>Ввод — tap-to-place + бесплатный Shuffle</strong>. <strong>Почему:</strong> для механики «собери одно конкретное<br />
+   слово из его же букв» tap-to-place — эталон жанра (research §2, таблица ввода): прощает ошибки,<br />
+   показывает черновик, масштабируется на длинные слова. Drag и QWERTY отклонены там же.</li>
+<li><strong>Карикатура — носитель кульминации и подсказки одновременно</strong>: тизер во время слов →<br />
+   полное раскрытие к фазе ответа. <strong>Почему:</strong> карикатура в оригинале и есть «ключ» к каламбуру<br />
+   (jumble-analysis), а постепенное раскрытие превращает её в естественную награду (research §6).</li>
+</ol>
+<hr />
+<h2>1. Карта экранов</h2>
+<pre><code>┌─────────┐   tap PLAY    ┌──────────────┐  tap узел  ┌───────────────┐
+│  HOME   │ ───────────────▶│  LEVEL MAP   │ ─────────▶ │  GAME: WORDS  │
+│ (лого,  │◀─────────────── │ (тропа 1..10)│            │  (фаза слов)  │
+│   PLAY) │   назад         └──────────────┘            └───────┬───────┘
+└─────────┘                        ▲                            │ все слова решены
+                                   │  tap NEXT                  ▼
+                            ┌──────┴───────┐  победа   ┌───────────────┐
+                            │  WIN / ИТОГ  │◀───────── │  GAME: ANSWER │
+                            │  (конфетти)  │           │  (фаза ответа)│
+                            └──────────────┘           └───────────────┘
+</code></pre>
+<p>Единственная навигация вперёд — по «тропе уровней». <strong>Почему:</strong> линейная тропа (как в Wordscapes)<br />
+даёт ощущение прогресса и убирает выбор-паралич; узлы 1..10 = сэмплы полной 100-уровневой кривой.</p>
+<h3>1.1 HOME</h3>
+<pre><code>╭──────────────────────────╮  ← статус-бар
+│                          │
+│        J U M B L E        │  зона взгляда
+│      (мягкий логотип)     │  (не трогается пальцем)
+│                          │
+│    🙂  иллюстрация-гэг     │
+│                          │
+│   ┌──────────────────┐   │
+│   │      PLAY  ▶      │   │  ← ЗОНА БОЛЬШОГО ПАЛЬЦА
+│   └──────────────────┘   │     (нижняя треть)
+│   [🔊]   [💰 250]   [⚙]   │  ← валюта видна с первого экрана
+╰──────────────────────────╯
+</code></pre>
+<ul>
+<li><strong>Почему кнопка PLAY в нижней трети:</strong> зона уверенного дотягивания большого пальца в portrait<br />
+  (research §2 — «нижняя половина = интеракции»). Верх экрана — только для взгляда.</li>
+<li><strong>Почему счётчик валюты 💰 виден сразу:</strong> приучает к существованию мягкой валюты до первого<br />
+  затыка; в прототипе подсказки бесплатны, но экономика подсказок показана (бриф п.3).</li>
+</ul>
+<h3>1.2 LEVEL MAP (тропа)</h3>
+<pre><code>╭──────────────────────────╮
+│  ← Назад        💰 250    │
+│                          │
+│              (10)🔒       │  верх = будущее (вне пальца, ок)
+│           (9)🔒           │
+│        (8)🔒              │
+│     (7)🔒                 │
+│  ·······(6)🔒             │
+│      (5)🔒                │
+│   (4)🔒                   │
+│ ·····(3)⭐                │  пройденные — со звёздами
+│    (2)⭐                  │
+│ ┌──(1)⭐ ТЕКУЩИЙ ●──┐     │  ← активный узел в зоне пальца
+│ └──────────────────┘     │
+╰──────────────────────────╯
+</code></pre>
+<ul>
+<li><strong>Почему активный узел внизу, «будущие» вверх:</strong> прокрутка тропы снизу вверх = метафора<br />
+  восхождения; тапабельный «текущий» узел всегда под большим пальцем.</li>
+<li><strong>Почему замки на будущих уровнях:</strong> гарантированная последовательность онбординга —<br />
+  первая реальная сложность не раньше, чем игрок освоил ввод (research §5).</li>
+</ul>
+<h3>1.3 GAME — фаза слов</h3>
+<pre><code>╭──────────────────────────╮
+│  ← 💰250    Word 2/3  ⚙  │  прогресс фазы
+│ ┌──────────────────────┐ │
+│ │  ✓ P A N E   (свёрнут)│ │  решённые слова — компактная полоса
+│ └──────────────────────┘ │
+│                          │
+│   ░░░ КАРИКАТУРА ░░░      │  ТИЗЕР: размыта/частична
+│   ░░░ (blur teaser) ░░░   │  зона взгляда
+│                          │
+│   ┌──┐┌──┐┌──┐┌──┐        │  СЛОТЫ ответа-слова (пусто)
+│   │  ││  ││  ││  │        │
+│   └──┘└──┘└──┘└──┘        │
+│                          │  ← отсюда вниз — ЗОНА ПАЛЬЦА
+│   ⓔ ⓣ ⓡ ⓔ               │  ПУЛ перемешанных букв (tap)
+│                          │
+│   [🔀 Shuffle]  [💡]   │  Shuffle бесплатно + лестница подсказок
+╰──────────────────────────╯
+</code></pre>
+<ul>
+<li><strong>Почему одно слово на экране (а не все N сразу):</strong> на 6" все 4–5 скрэмблов не читаются;<br />
+  фокус на одном скрэмбле снижает когнитивную нагрузку (jumble-analysis, «следствия»). Решённые<br />
+  сворачиваются в полосу сверху — игрок видит накопленный прогресс.</li>
+<li><strong>Почему слоты над пулом, пул внизу:</strong> цель ввода (слоты) в поле зрения, источник (буквы) под<br />
+  пальцем; палец не закрывает слово-черновик (антипаттерн drag, research §2).</li>
+<li><strong>Почему карикатура-тизер размыта:</strong> интрига + мотивация дорешать слова, чтобы «проявить» картинку<br />
+  (бриф предрешение 3; research §6 — раскрытие как награда).</li>
+</ul>
+<h3>1.4 GAME — фаза ответа</h3>
+<pre><code>╭──────────────────────────╮
+│  ← 💰250     FINAL  ⚙     │
+│                          │
+│   ███ КАРИКАТУРА ███      │  РАСКРЫТА полностью (награда)
+│   ███ (full color) ███    │
+│                          │
+│ «What the son took over — │  ПОДПИСЬ-ПОДВОДКА (…)
+│  it became an …»          │  заканчивается многоточием
+│                          │
+│  ┌──┐┌──┐┌──┐┌──┐ ┌──┐┌─┐ │  СЛОТЫ ответа с разбивкой по словам
+│  │“ ││  ││  ││ ”│ │  ││ │ │  кавычки вокруг слова-каламбура
+│  └──┘└──┘└──┘└──┘ └──┘└─┘ │
+│                          │  ← ЗОНА ПАЛЬЦА
+│   ⓗ ⓔ ⓘ ⓡ ⓕ ⓞ ...       │  ПУЛ = буквы из кружков
+│                          │
+│  [🔀]  [💡 Открыть]  [❓шутка]│
+╰──────────────────────────╯
+</code></pre>
+<ul>
+<li><strong>Почему подпись заканчивается «…»:</strong> ответ грамматически продолжает подпись — это форма<br />
+  подсказки самого оригинала (jumble-analysis, «Answer here»).</li>
+<li><strong>Почему кавычки в слотах:</strong> визуально выделяют слово-каламбур («"WADE" A MINUTE»), как в журнале —<br />
+  сигнал «здесь игра слов». Индексы кавычек берутся из поля <code>surprise.quoted</code> в levels.json.</li>
+<li><strong>Почему пул = именно кружковые буквы:</strong> прямая передача механики кружков оригинала — игрок<br />
+  весь уровень видел, как эти буквы «улетали» в буфер (см. флоу §2).</li>
+</ul>
+<h3>1.5 WIN / ИТОГ</h3>
+<pre><code>╭──────────────────────────╮
+│        🎉 конфетти 🎉      │
+│      BRILLIANT!          │  эскалирующая похвала
+│                          │
+│   ███ карикатура ███      │  финальная сцена + ответ
+│  “HEIR FORCE”             │  ответ показан целиком
+│                          │
+│   +4 💰   (бегущие цифры) │  награда монетами (Peggle-момент)
+│                          │  ← ЗОНА ПАЛЬЦА
+│   ┌──────────────────┐   │
+│   │    NEXT  ▶        │   │
+│   └──────────────────┘   │
+╰──────────────────────────╯
+</code></pre>
+<ul>
+<li><strong>Почему конфетти + бегущие монеты:</strong> «Peggle-момент» завершения (research §6) — эмоциональная<br />
+  точка, ради которой играют. Кнопка NEXT ведёт назад на тропу к следующему узлу.</li>
+</ul>
+<hr />
+<h2>2. Детальный флоу уровня (happy-path)</h2>
+<ol>
+<li><strong>Старт.</strong> Тап по узлу тропы → фаза слов. Карикатура появляется как <strong>тизер</strong> (blur/частичная).<br />
+   Показан скрэмбл слова 1, пул его букв, пустые слоты.</li>
+<li><strong>Решение слова i (tap-to-place):</strong><br />
+   - Тап по плитке пула → буква занимает <strong>первый свободный слот</strong> слева; плитка в пуле гаснет.<br />
+<strong>Почему первый свободный:</strong> убирает лишний прицельный тап по конкретному слоту (research §2 —<br />
+     tap-to-place «выбирает буквы в правильном порядке»).<br />
+   - Тап по заполненному слоту → буква возвращается в пул. <strong>Почему:</strong> тривиальная отмена = главное<br />
+     преимущество tap-to-place над drag.<br />
+   - <strong>Shuffle</strong> (🔀) перемешивает буквы пула, слоты не трогает. <strong>Почему бесплатно и всегда:</strong><br />
+     снимает ~80% затыков, охраняет ощущение честности (research §3).</li>
+<li><strong>Слово верно (все слоты заполнены и совпали):</strong><br />
+   - Каскадный «pop» плиток + мягкий звон (research §6).<br />
+   - <strong>Буквы-кружки этого слова подсвечиваются и «улетают» в буфер ответа</strong> (визуальный полёт вверх).<br />
+<strong>Почему:</strong> делает видимой связь фаз — игрок накапливает материал для финала (бриф предрешение 4).<br />
+   - Решённое слово <strong>сворачивается</strong> в компактную полосу сверху (✓ PANE). Тизер карикатуры чуть<br />
+     «проявляется» (снижаем blur пропорционально прогрессу — джус раскрытия).</li>
+<li><strong>Слово неверно (все слоты заполнены, но не совпало):</strong> мягкий shake строки + подсветка,<br />
+   буквы <strong>не</strong> сбрасываются. <strong>Почему:</strong> fail-состояния нет (бриф п.6); ошибка — это приглашение<br />
+   поправить, а не наказание. Уютный жанр → без screen shake, мягко (research §6).</li>
+<li>Повтор 2–4 для слов 2..N.</li>
+<li><strong>Переход к фазе ответа</strong> (после последнего слова): карикатура <strong>раскрывается полностью</strong>,<br />
+   появляется <strong>подпись-подводка</strong> с «…», слоты перестраиваются под ответ (разбивка по словам,<br />
+   кавычки каламбура), пул = накопленные кружковые буквы.</li>
+<li><strong>Сборка ответа</strong> тем же tap-to-place. Верно → фаза WIN (конфетти, ответ целиком, +монеты).</li>
+</ol>
+<p><strong>Итого мэппинг на данные:</strong> слоты слова i = <code>words[i].answer</code>, пул = <code>words[i].scramble</code>,<br />
+кружки = <code>words[i].circles</code>; пул финала = все кружковые буквы, слоты финала = <code>surprise.answer</code><br />
+с разбивкой по словам, кавычки = <code>surprise.quoted</code>, подпись = <code>surprise.caption</code>.</p>
+<hr />
+<h2>3. Лестница подсказок (по информативности)</h2>
+<p>Порядок и логика — из research §3 (ценовая лестница: случайное дёшево → выбор дороже → массовое дорого).<br />
+В прототипе <strong>все бесплатны</strong>, но UI, счётчик валюты и цены присутствуют.</p>
+<div class="tblwrap"><table class="tbl">
+<thead>
+<tr>
+<th>Подсказка (подпись в игре)</th>
+<th>Когда</th>
+<th>Цена (модель полной версии)</th>
+<th>Что делает</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>🔀 Shuffle</strong></td>
+<td>всегда, обе фазы</td>
+<td><strong>0 (бесплатно)</strong></td>
+<td>перемешивает пул</td>
+</tr>
+<tr>
+<td><strong>💡 Reveal letter</strong></td>
+<td>обе фазы</td>
+<td>дёшево (~25)</td>
+<td>ставит одну случайную верную букву в слот</td>
+</tr>
+<tr>
+<td><strong>🎯 Letter in slot</strong></td>
+<td>обе фазы</td>
+<td>дороже (~2×)</td>
+<td>игрок тапает пустой слот → туда встаёт верная буква</td>
+</tr>
+<tr>
+<td><strong>❓ Explain the joke</strong></td>
+<td>только фаза ответа</td>
+<td>средне</td>
+<td>показывает <code>surprise.explanation</code> — нарративный хинт</td>
+</tr>
+<tr>
+<td><strong>✨ Solve word</strong></td>
+<td>обе фазы</td>
+<td>дорого / rewarded ad</td>
+<td>достраивает всё текущее слово</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li><strong>Почему «Объяснить шутку» отдельной ступенью:</strong> это фирменный ход Just Jumble (David's Hints) —<br />
+  дёшев в производстве, эмоционально тёплый, идеален для карикатурного формата (research §3, §1.1).<br />
+  Текст берётся прямо из <code>surprise.explanation</code> каждого уровня.</li>
+<li><strong>Почему «Решить слово» = дорого/реклама:</strong> дефицит валюты (доход 2–4 монеты &lt;&lt; цена хинтов)<br />
+  создаёт спрос IAP/rewarded в полной версии (research §3).</li>
+</ul>
+<hr />
+<h2>4. Джус и фидбек (спека, без сложной анимации в прототипе)</h2>
+<div class="tblwrap"><table class="tbl">
+<thead>
+<tr>
+<th>Событие</th>
+<th>Эффект</th>
+<th>Источник</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Тап по плитке</td>
+<td>pop-плитки (scale up→settle с overshoot), haptic-тик, «клик»</td>
+<td>research §6 (микро)</td>
+</tr>
+<tr>
+<td>Плитка в слот</td>
+<td>буква «долетает» с overshoot</td>
+<td>research §6</td>
+</tr>
+<tr>
+<td>Слово верно</td>
+<td>каскадный разлёт + звон; кружки летят в буфер</td>
+<td>research §6 + бриф п.4</td>
+</tr>
+<tr>
+<td>Слово неверно</td>
+<td>короткий мягкий shake строки, без сброса</td>
+<td>research §6 (без наказания)</td>
+</tr>
+<tr>
+<td>Раскрытие карикатуры</td>
+<td>плавное снятие blur к финалу</td>
+<td>бриф предрешение 3</td>
+</tr>
+<tr>
+<td>Ответ верен</td>
+<td>конфетти, фанфары, бегущие монеты (Peggle-момент)</td>
+<td>research §6</td>
+</tr>
+<tr>
+<td>Похвала</td>
+<td>эскалация эпитетов: <strong>GREAT! → BRILLIANT! → SPECTACULAR!</strong></td>
+<td>research §6</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Принцип:</strong> джус меняет ощущение, не правила; в уютном жанре — мягкие тёплые эффекты, без<br />
+резкого screen shake (research §6).</p>
+<hr />
+<h2>5. Онбординг (уровень 1) — kinesthetic, без текста правил</h2>
+<ul>
+<li>Уровень 1 = <strong>сам туториал</strong>: 1 слово (<code>NAPS</code>), 4 буквы, топ-лексика, ответ прямой (<code>NAP</code>).</li>
+<li><strong>Палец-призрак</strong> демонстрирует один тап плитки → буква летит в слот; дальше игрок повторяет сам.</li>
+<li>Ни одного экрана текстовых правил. <strong>Почему:</strong> «kinesthetic first», уровень 1 решается &lt;15–30 сек,<br />
+  первый «word complete» в первые 60 сек FTUE (research §5). Порог сложности сдвинут: декои и<br />
+  ловушки-анаграммы появляются не раньше L4 (бриф — «гарантированный успех» на старте).</li>
+<li>Одна механика за раз: L1 — базовый ввод; L2 — вводится Shuffle; L3 — первая подсказка выдаётся<br />
+  бесплатно с мягким «попробуй» (обучение трате валюты, research §5).</li>
+</ul>
+<hr />
+<h2>6. Ошибки и застревание (fail-состояния нет)</h2>
+<ul>
+<li>Уровень <strong>нельзя проиграть</strong> — нет таймера, нет лимита попыток. <strong>Почему:</strong> таймер — антипаттерн<br />
+  уютного жанра (research §4 п.7; бриф предрешение 5).</li>
+<li>Неверное слово при всех заполненных слотах → мягкий shake + подсветка, буквы остаются.</li>
+<li>Затык лечится <strong>лестницей подсказок</strong> (§3), начиная с бесплатного Shuffle.</li>
+<li><strong>Мягкий авто-нудж:</strong> если игрок 30+ сек не делает верных ходов, кнопка 💡 подсвечивается<br />
+  (не блокирует, только приглашает). <strong>Почему:</strong> держит поток без наказания (research §5, §6).</li>
+</ul>
+<hr />
+<h2>7. Доступность</h2>
+<ul>
+<li><strong>Плитки ≥ 44 pt</strong> (тач-таргет), контраст текста к плитке ≥ 4.5:1. <strong>Почему:</strong> нижняя граница<br />
+  комфортного тача (бриф п.7).</li>
+<li><strong>Длинные слова/ответы (6+ букв, финал до 12):</strong> пул и слоты переносятся <strong>в 2 ряда</strong>, размер<br />
+  плитки не уменьшается ниже 44 pt. <strong>Почему:</strong> L6 (<code>PIER PRESSURE</code>, 12 букв) и L10 не влезают в<br />
+  один ряд на 6" — перенос обязателен (бриф п.7).</li>
+<li>Кружковые буквы в фазе слов помечены <strong>и цветом, и обводкой-кружком</strong> (не только цветом) —<br />
+  для дальтоников. <strong>Почему:</strong> сохранение кружков оригинала + доступность.</li>
+<li>Все интеракции — в нижней половине экрана (one-handed portrait).</li>
+</ul>
+<hr />
+<h2>Соответствие чек-листу брифа</h2>
+<ul>
+<li>[x] Все экраны описаны и заскетчены; зоны большого пальца размечены (§1).</li>
+<li>[x] Каждое решение снабжено «Почему» со ссылкой на research/анатомию оригинала.</li>
+<li>[x] Флоу уровня покрывает happy-path (§2) и застревание (§6).</li>
+<li>[x] Спека достаточна для сборки прототипа: явный мэппинг экранов на поля <code>levels.json</code> (§2, конец).</li>
+</ul>
+</main>
+<footer class="docfoot">
+  Документ проекта Word Tangle. <a href="https://elenarumiru.github.io/word-tangle/">← вернуться к презентации</a>
+</footer>
+</body>
+</html>

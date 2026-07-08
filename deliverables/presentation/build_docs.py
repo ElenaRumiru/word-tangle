@@ -13,6 +13,7 @@ REPO = HERE.parent.parent
 SITE = "https://elenarumiru.github.io/word-tangle"
 
 DOCS = [
+    ("ux-concept",     REPO/"deliverables/levels/ux-concept.md",           "UX и управление · концепт"),
     ("levels-design",  REPO/"deliverables/levels/levels-design.md",        "Дизайн уровней · обоснование кривой"),
     ("balance-notes",  REPO/"deliverables/balance/balance-notes.md",       "Баланс · формула и веса"),
     ("monetization",   REPO/"deliverables/monetization/scroll-puzzle-hybrid.md", "Монетизация · полный план a→d"),
