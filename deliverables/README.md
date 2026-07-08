@@ -3,9 +3,9 @@
 Презентационный документ. Все пункты задания (`../Тестовое задание.png`) закрыты; здесь — резюме и
 ссылки на артефакты. Подробная разведка и брифы — в `../docs/`.
 
-**Живые ссылки (claude.ai, под аккаунтом владельца):**
-- Презентация (case study): https://claude.ai/code/artifact/647716ad-0bd1-41ed-91b9-1bb4b0e2884f
-- Играбельный прототип: https://claude.ai/code/artifact/1a237827-6e1e-4d69-a7b1-e4b89cf28efc
+**Живые ссылки (GitHub Pages — публично, без логина):**
+- Презентация (case study): https://elenarumiru.github.io/word-tangle/
+- Играбельный прототип: https://elenarumiru.github.io/word-tangle/prototype/
 
 **Локально:** открыть `presentation/index.html` (презентация) или `prototype/jumble-mobile.html` (прототип)
 двойным кликом — offline, один файл. Кнопка **🐞 ЧИТЫ** по центру сверху — панель тестовых читов
