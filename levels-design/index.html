@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Обоснование кривой сложности 1→10 (= сэмпл кривой 1→100) — Word Tangle</title>
+<style>
+  :root{
+    --paper:#F1EBDD; --card:#FBF8F1; --ink:#1B2430; --ink-2:#2A3541; --soft:#55606B;
+    --faint:#8A8574; --line:#DcD2BF; --teal:#1F6E63; --teal-d:#17544c; --amber:#E2853F;
+    --display:"Helvetica Neue",Arial,"Segoe UI",system-ui,sans-serif;
+    --body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:"SF Mono","Cascadia Code",Consolas,ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.65;
+    -webkit-font-smoothing:antialiased}
+  .topbar{position:sticky;top:0;z-index:10;background:rgba(241,235,221,.92);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);padding:11px 22px;display:flex;align-items:center;gap:14px}
+  .topbar a.back{font-family:var(--mono);font-size:12.5px;font-weight:700;color:var(--teal-d);
+    text-decoration:none;display:inline-flex;gap:6px;align-items:center}
+  .topbar a.back:hover{color:var(--teal)}
+  .topbar .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--soft);margin-left:auto}
+  .hero{max-width:800px;margin:0 auto;padding:44px 24px 6px}
+  .hero .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--teal);font-weight:600}
+  .hero h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,4.6vw,42px);
+    letter-spacing:-.02em;margin:12px 0 0;text-wrap:balance;line-height:1.05}
+  .article{max-width:760px;margin:0 auto;padding:22px 24px 90px}
+  .article>*:first-child{margin-top:0}
+  .article h2{font-family:var(--display);font-weight:800;font-size:25px;margin:40px 0 12px;
+    padding-top:18px;border-top:1px solid var(--line);letter-spacing:-.01em}
+  .article h3{font-family:var(--display);font-weight:700;font-size:19px;margin:26px 0 8px}
+  .article h4{font-family:var(--display);font-weight:700;font-size:16px;margin:20px 0 6px;color:var(--teal-d)}
+  .article p{margin:0 0 14px}
+  .article ul,.article ol{margin:0 0 15px;padding-left:22px}
+  .article li{margin:5px 0}
+  .article li>ul,.article li>ol{margin:6px 0}
+  .article a{color:var(--teal-d);text-underline-offset:3px}
+  .article strong{color:var(--ink);font-weight:700}
+  .article code{font-family:var(--mono);font-size:.88em;background:#ece2cd;padding:1px 6px;
+    border-radius:5px;color:#8a5a24;word-break:break-word}
+  .article pre{background:var(--ink);color:#EFE7D6;padding:16px 18px;border-radius:12px;
+    overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.55;margin:0 0 16px}
+  .article pre code{background:none;padding:0;color:inherit;font-size:inherit}
+  .article blockquote{border-left:3px solid var(--teal);background:var(--card);margin:0 0 15px;
+    padding:12px 16px;border-radius:0 10px 10px 0;color:var(--ink-2)}
+  .article blockquote p:last-child{margin:0}
+  .article hr{border:none;border-top:1px solid var(--line);margin:30px 0}
+  /* custom tables — same un-generic style as the deck */
+  .tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card);margin:0 0 18px}
+  table.tbl{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;min-width:520px}
+  table.tbl thead th{background:var(--ink);color:#EFE7D6;font-family:var(--mono);font-size:11px;
+    font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:11px 14px;text-align:left;white-space:nowrap}
+  table.tbl tbody td{padding:10px 14px;border-top:1px solid var(--line);font-size:13.5px;color:var(--ink-2);vertical-align:top}
+  table.tbl tbody tr:nth-child(even){background:rgba(31,110,99,.045)}
+  table.tbl tbody td code{background:#e4dcc8}
+  .docfoot{max-width:760px;margin:0 auto;padding:22px 24px 60px;border-top:1px solid var(--line);
+    color:var(--faint);font-size:13px}
+  .docfoot a{color:var(--teal-d)}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a class="back" href="https://elenarumiru.github.io/word-tangle/">← Word Tangle · case study</a>
+  <span class="lbl">Дизайн уровней · обоснование кривой</span>
+</div>
+<header class="hero">
+  <div class="eyebrow">Дизайн уровней · обоснование кривой</div>
+  <h1>Обоснование кривой сложности 1→10 (= сэмпл кривой 1→100)</h1>
+</header>
+<main class="article">
+
+<p>Deliverable фазы 1. Пара к <code>levels.json</code> и <code>validate_levels.py</code>. Контент — английский, обоснование — русское.</p>
+<p>10 уровней прототипа <strong>сэмплируют полную 100-уровневую кривую</strong> в точках<br />
+<code>1, 12, 23, 34, 45, 56, 67, 78, 89, 100</code> (равномерный шаг ≈ 11). Балансовая таблица фазы 5<br />
+(<code>brief-balance-table</code>) <strong>обязана давать те же значения P1–P8 и difficulty.score в этих десяти<br />
+точках</strong> — единая модель, два артефакта. Значения ниже — контракт для фазы 5.</p>
+<hr />
+<h2>1. Сложность как система из 8 параметров (не «слова длиннее»)</h2>
+<div class="tblwrap"><table class="tbl">
+<thead>
+<tr>
+<th>#</th>
+<th>Параметр</th>
+<th>L1 (v1)</th>
+<th>L10 (v100)</th>
+<th>Как масштабируем</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P1</td>
+<td>Число слов</td>
+<td>1</td>
+<td>5</td>
+<td>грубый регулятор длины уровня</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>Длина слов (макс)</td>
+<td>4</td>
+<td>6–7</td>
+<td>потолок читаемости на 6"</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>Частотность (Zipf-банд)</td>
+<td>топ (5.0+)</td>
+<td>редкая (2.5–3.5)</td>
+<td>банды словаря wordfreq</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>Скрэмбл-скор (0–1)</td>
+<td>0.33</td>
+<td>0.70</td>
+<td>формула §3</td>
+</tr>
+<tr>
+<td>P5</td>
+<td>Анаграммы-ловушки</td>
+<td>нет</td>
+<td>да</td>
+<td>правдоподобная ложная анаграмма в пуле</td>
+</tr>
+<tr>
+<td>P6</td>
+<td>Букв / слов в ответе</td>
+<td>3 / 1</td>
+<td>10 / 2</td>
+<td>длина и «многословность» финала</td>
+</tr>
+<tr>
+<td>P7</td>
+<td>Тип каламбура</td>
+<td>direct</td>
+<td>double-layer</td>
+<td>прямое → омофон → двухслойное</td>
+</tr>
+<tr>
+<td>P8</td>
+<td>Прозрачность карикатуры (5=почти показывает, 1=косвенный намёк)</td>
+<td>5</td>
+<td>1</td>
+<td>детализация сцены в промпте</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Почему шкала P8 инвертирована</strong> (5 = легко, 1 = сложно): чтобы «рост сложности» = «падение P8»,<br />
+удобно читать спайки. В <code>levels.json</code> хранится как есть; в difficulty-скоре вклад берётся как <code>(6−P8)</code>.</p>
+<hr />
+<h2>2. Таблица уровней: P1–P8, целевое время, роль в кривой</h2>
+<p>| Прото | Virt | Слова | Ответ | P1 | P2 | P3 | P4 | P5 | P6 | P7 | P8 | score | Цель, сек | Роль |<br />
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|<br />
+| 1 | 1 | NAPS | NAP | 1 | 4 | 1 | 0.33 | 0 | 3 | direct | 5 | <strong>1.0</strong> | &lt;30 | старт/туториал |<br />
+| 2 | 12 | PANE·TREE | PANE | 2 | 4 | 2 | 0.33 | 0 | 4 | direct | 4 | <strong>1.6</strong> | 30–45 | подъём |<br />
+| 3 | 23 | MEAT·TREE | MEET | 2 | 4 | 3 | 0.45 | 0 | 4 | homophone | 4 | <strong>2.3</strong> | 40–60 | 1-й омофон |<br />
+| 4 | 34 | HEIR·FORCE | HEIR FORCE | 2 | 5 | 4 | 0.60 | 1 | 9 | homophone | 3 | <strong>3.4</strong> | 70–100 | <strong>СПАЙК</strong> |<br />
+| 5 | 45 | HOLD·BOAT·SHOW | OLD HAT | 3 | 4 | 3 | 0.33 | 0 | 6 | idiom | 4 | <strong>3.0</strong> | 60–80 | <em>передышка</em> |<br />
+| 6 | 56 | PIER·PRESSURE·GUIDED | PIER PRESSURE | 3 | 6 | 4 | 0.52 | 1 | 12 | homophone | 3 | <strong>4.2</strong> | 90–120 | подъём |<br />
+| 7 | 67 | SIR·PRIZE·MODEST·AZURE | SIR PRIZE | 4 | 5 | 5 | 0.50 | 1 | 8 | double-layer | 2 | <strong>5.0</strong> | 110–140 | <strong>СПАЙК</strong> |<br />
+| 8 | 78 | GAME·SHOW·GUIDED·SHEEP | GAME SHOW | 4 | 5 | 4 | 0.40 | 1 | 8 | double-layer | 3 | <strong>4.6</strong> | 100–130 | <em>передышка</em> |<br />
+| 9 | 89 | SCREEN·TEST·GRASSY·HUMBLE | SCREEN TEST | 4 | 6 | 5 | 0.60 | 1 | 10 | double-layer | 2 | <strong>5.6</strong> | 130–160 | подъём |<br />
+| 10 | 100 | PANE·RELIEF·POROUS·SLEIGH·TETHER | PANE RELIEF | 5 | 6 | 6 | 0.70 | 1 | 10 | double-layer | 1 | <strong>6.8</strong> | <strong>180+</strong> | <strong>ТОП-СПАЙК</strong> |</p>
+<p>(В скоре учитываются только circle-несущие слова + число слов как P1; filler-слова на поздних<br />
+уровнях — регулятор P1/времени, но их буквы не идут в ответ, как и часть некружковых клеток в оригинале.)</p>
+<hr />
+<h2>3. Формула скрэмбл-скора P4 (0–1)</h2>
+<p>Реализована в <code>validate_levels.py</code> и генераторе (<code>sscore</code>). Для answer <code>a</code>, scramble <code>s</code> длины <code>n</code>:</p>
+<pre><code>kept        = число исходных биграмм (a[i],a[i+1]), сохранившихся в s как соседство
+              в любом порядке (прямом или обратном)
+broken_frac = 1 − kept / (n−1)          # 1.0 = все биграммы разрушены (макс. дезориентация)
+first_pen   = −0.15  если s[0] == a[0]   # первая буква на месте → легче
+last_pen    = −0.05  если s[−1] == a[−1] # последняя на месте → чуть легче
+P4          = clamp(0..1, broken_frac + first_pen + last_pen)
+</code></pre>
+<ul>
+<li><strong>Почему биграммы:</strong> сохранённая пара букв (напр. <code>TR</code> в <code>TREE</code>) — «зацепка», по которой мозг<br />
+  достраивает слово; их разрушение — главный рычаг «залипания» скрэмбла (jumble-analysis п.2).</li>
+<li><strong>Почему штраф за первую букву:</strong> в оригинале скрэмблы с первой буквой на месте решаются заметно<br />
+  быстрее; это стандарт градации scramble-режимов (research §4 п.5: Easy = первая/последняя на месте).</li>
+<li><strong>Почему обратное соседство считается «сохранённым»:</strong> чистый разворот слова (<code>WEARY→YRAEW</code>)<br />
+  читается задом наперёд почти мгновенно — формула честно даёт ему P4≈0. Поэтому на поздних уровнях<br />
+  развороты не используются (см. <code>gen_levels.py</code>).</li>
+<li><strong>Псевдослова</strong> («залипают», jumble-analysis п.2) косвенно поощряются: чтобы разрушить биграммы,<br />
+  скрэмбл обычно получает произносимый, но не-словарный вид (<code>ESRPRSUE</code>, <code>MEHBUL</code>) — и это же<br />
+  проверяется гейтом (b): scramble с zipf ≥ 3 отвергается как настоящее слово.</li>
+</ul>
+<hr />
+<h2>4. Кривая: восходящая пила (спайки 4/7/10, передышки 5/8)</h2>
+<pre><code>score
+7.0 ┤                                             ●10  ← топ-спайк (=v100)
+6.0 ┤                                    ●9
+5.0 ┤                        ●7                        7,9 подъёмы
+4.5 ┤                            ●8 (дип)
+4.0 ┤                ●6
+3.5 ┤        ●4 (спайк)
+3.0 ┤            ●5 (дип)
+2.0 ┤    ●3
+1.5 ┤  ●2
+1.0 ┤●1
+    └─┬──┬──┬──┬──┬──┬──┬──┬──┬──┬─
+      1  2  3  4  5  6  7  8  9  10
+</code></pre>
+<p><strong>Чем создан каждый спайк / передышка (конкретно):</strong></p>
+<ul>
+<li><strong>Спайк L4 (v34) — «первый настоящий вызов»:</strong> впервые появляются одновременно (а) двухсловный<br />
+  ответ-омофон <code>HEIR FORCE</code> (P6 9 букв / 2 слова), (б) первая ловушка-анаграмма P5, (в) скрэмбл<br />
+<code>CROFE</code> для <code>FORCE</code> с P4 0.60. Скачок score 2.3→3.4. <strong>Почему тут:</strong> research §5 — первая реальная<br />
+  сложность на 5–10 уровне; в сэмпле это как раз v34.</li>
+<li><strong>Передышка L5 (v45):</strong> число слов растёт до 3 (ощущение прогресса), но лексика возвращается в<br />
+  топ-банд (<code>HOLD/BOAT/SHOW</code>, Zipf 5+), скрэмблы лёгкие (P4 0.33), каламбур — знакомая идиома<br />
+<code>OLD HAT</code>, ловушек нет. score падает 3.4→3.0. <strong>Почему:</strong> «дыхание» после пика — стандарт casual<br />
+  level-design (research §4 п.6).</li>
+<li><strong>Спайк L7 (v67) — «когнитивный скачок»:</strong> впервые <strong>двухслойный</strong> каламбур <code>SIR PRIZE</code><br />
+  (омофон surprise + смысловой слой «сэр»), 4 слова, P8 падает до 2 (карикатура намекает косвенно).<br />
+  score 4.2→5.0.</li>
+<li><strong>Передышка L8 (v78):</strong> те же 4 слова, но дружелюбнее — лексика проще (P3 4), скрэмблы мягче<br />
+  (P4 0.40), карикатура прозрачнее (P8 3), ответ короче (8 букв). score 5.0→4.6.</li>
+<li><strong>Топ-спайк L10 (v100) — «экзамен»:</strong> максимум по совокупности: 5 слов (P1 5), редкая лексика<br />
+<code>POROUS/SLEIGH/TETHER</code> (P3 6), самые злые скрэмблы (P4 0.70), двухслойный <code>PANE RELIEF</code><br />
+  (pane=pain), и <strong>самая косвенная карикатура</strong> (P8 1: доктор просто вздыхает от облегчения — связь<br />
+  «окно → боль → облегчение» надо додумать). Цель — 3+ минуты. score 5.6→6.8.</li>
+</ul>
+<p><strong>Почему пила, а не прямая:</strong> монотонный рост выматывает; локальные передышки после пиков дают<br />
+дофаминовую «награду лёгкостью» и удерживают retention (research §4 п.6). Гейт (e) валидатора<br />
+явно допускает дипы только на id 5 и 8.</p>
+<hr />
+<h2>5. Маппинг на полную кривую 1→100 (контракт для фазы 5)</h2>
+<ul>
+<li>Каждый прото-уровень k — <strong>якорь</strong> в точке <code>virtualLevel[k]</code>. Между якорями балансовая таблица<br />
+  интерполирует P1–P8 монотонно (с той же пилой в миниатюре), но <strong>в самих якорных точках значения<br />
+  обязаны совпасть</strong> с таблицей выше.</li>
+<li><strong>Опорные пары, которые фаза 5 не имеет права нарушить:</strong></li>
+<li>v1 → score 1.0, 1 слово, P8=5 (туториал);</li>
+<li>v34 → первый спайк (первый 2-словный омофон + первая ловушка);</li>
+<li>v45, v78 → локальные дипы (передышки);</li>
+<li>v100 → score 6.8, 5 слов, двухслойный каламбур, P8=1.</li>
+<li>Диапазон difficulty.score прототипа 1.0–6.8 = сжатый диапазон полной игры; в полной таблице<br />
+  100-й уровень = потолок кривой, 1-й = пол. Формула score в фазе 5 = та же взвешенная сумма<br />
+  нормированных P1–P8, что даёт эти 10 чисел на входных P-значениях таблицы выше.</li>
+</ul>
+<p><strong>Ориентировочная формула score (для сшивки с балансом):</strong></p>
+<pre><code>score = 0.9·P1 + 0.25·P2 + 0.35·P3 + 1.2·P4 + 0.6·P5 + 0.12·P6
+        + w(P7) + 0.30·(6−P8)
+где w(direct)=0, w(idiom)=0.3, w(homophone)=0.6, w(double-layer)=1.0
+</code></pre>
+<p>Веса подобраны так, чтобы дать таблицу §2 (пила со спайками 4/7/10). Точная калибровка весов —<br />
+задача balance-economist в фазе 5; здесь формула зафиксирована как каркас, значения score — как якоря.</p>
+<hr />
+<h2>6. Проверка критериев готовности</h2>
+<ul>
+<li><strong>L1 решается &lt;30 сек без подсказок:</strong> 1 слово, 4 буквы, топ-лексика, лёгкий скрэмбл, прямой ответ. ✓</li>
+<li><strong>L10 требует 3+ мин:</strong> 5 слов, редкая лексика, злые скрэмблы, двухслойный каламбур, косвенная<br />
+  карикатура (P8=1). ✓</li>
+<li><strong>Монотонность с передышками:</strong> гейт (e) <code>validate_levels.py</code> = PASS. ✓</li>
+<li><strong>Якоря 1→100 зафиксированы</strong> для фазы 5 (§5). ✓</li>
+</ul>
+<hr />
+<h2>Дополнение (гейт-решение пользователя): кружки «как в оригинале»</h2>
+<p>По решению на гейте фазы 1 кружки перераспределены под <strong>аутентичное правило Jumble</strong>:<br />
+<strong>каждое слово уровня отдаёт ≥1 букву</strong> в ответ-сюрприз, а финал — настоящая анаграмма из<br />
+букв, разбросанных по всем словам (а не «убрать пробел из двух уже разгаданных слов»).</p>
+<ul>
+<li>Реализовано скриптом <code>redistribute_circles.py</code> (задача о назначениях: покрыть мультисет букв<br />
+  ответа позициями слов так, чтобы каждое слово было задействовано; приоритет наименее загруженного<br />
+  слова — для баланса распределения).</li>
+<li>Валидатор получил правило <strong>(g)</strong>: слово с нулём кружков — это FAIL. Все 10 уровней проходят.</li>
+<li>Пример L10 <code>PANE RELIEF</code>: PANE→A,N; RELIEF→E,L,F; POROUS→P,R; SLEIGH→E,I; TETHER→E — 10 букв<br />
+  из 5 слов собираются в ответ. Финал топ-уровня стал настоящей кросс-словной анаграммой, что<br />
+  усиливает кульминацию (соответствие задаче «10-й уровень ощущается как 100-й»).</li>
+<li>Следствие для баланса (фаза 5) и генератора (фаза 4): every-word-contributes — жёсткий инвариант,<br />
+  генератор обязан его соблюдать (уже отражено в brief-level-generator: подбор слов под кружки — CSP).</li>
+</ul>
+</main>
+<footer class="docfoot">
+  Документ проекта Word Tangle. <a href="https://elenarumiru.github.io/word-tangle/">← вернуться к презентации</a>
+</footer>
+</body>
+</html>

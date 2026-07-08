@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Balance notes — 100-level difficulty curve — Word Tangle</title>
+<style>
+  :root{
+    --paper:#F1EBDD; --card:#FBF8F1; --ink:#1B2430; --ink-2:#2A3541; --soft:#55606B;
+    --faint:#8A8574; --line:#DcD2BF; --teal:#1F6E63; --teal-d:#17544c; --amber:#E2853F;
+    --display:"Helvetica Neue",Arial,"Segoe UI",system-ui,sans-serif;
+    --body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:"SF Mono","Cascadia Code",Consolas,ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.65;
+    -webkit-font-smoothing:antialiased}
+  .topbar{position:sticky;top:0;z-index:10;background:rgba(241,235,221,.92);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);padding:11px 22px;display:flex;align-items:center;gap:14px}
+  .topbar a.back{font-family:var(--mono);font-size:12.5px;font-weight:700;color:var(--teal-d);
+    text-decoration:none;display:inline-flex;gap:6px;align-items:center}
+  .topbar a.back:hover{color:var(--teal)}
+  .topbar .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--soft);margin-left:auto}
+  .hero{max-width:800px;margin:0 auto;padding:44px 24px 6px}
+  .hero .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--teal);font-weight:600}
+  .hero h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,4.6vw,42px);
+    letter-spacing:-.02em;margin:12px 0 0;text-wrap:balance;line-height:1.05}
+  .article{max-width:760px;margin:0 auto;padding:22px 24px 90px}
+  .article>*:first-child{margin-top:0}
+  .article h2{font-family:var(--display);font-weight:800;font-size:25px;margin:40px 0 12px;
+    padding-top:18px;border-top:1px solid var(--line);letter-spacing:-.01em}
+  .article h3{font-family:var(--display);font-weight:700;font-size:19px;margin:26px 0 8px}
+  .article h4{font-family:var(--display);font-weight:700;font-size:16px;margin:20px 0 6px;color:var(--teal-d)}
+  .article p{margin:0 0 14px}
+  .article ul,.article ol{margin:0 0 15px;padding-left:22px}
+  .article li{margin:5px 0}
+  .article li>ul,.article li>ol{margin:6px 0}
+  .article a{color:var(--teal-d);text-underline-offset:3px}
+  .article strong{color:var(--ink);font-weight:700}
+  .article code{font-family:var(--mono);font-size:.88em;background:#ece2cd;padding:1px 6px;
+    border-radius:5px;color:#8a5a24;word-break:break-word}
+  .article pre{background:var(--ink);color:#EFE7D6;padding:16px 18px;border-radius:12px;
+    overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.55;margin:0 0 16px}
+  .article pre code{background:none;padding:0;color:inherit;font-size:inherit}
+  .article blockquote{border-left:3px solid var(--teal);background:var(--card);margin:0 0 15px;
+    padding:12px 16px;border-radius:0 10px 10px 0;color:var(--ink-2)}
+  .article blockquote p:last-child{margin:0}
+  .article hr{border:none;border-top:1px solid var(--line);margin:30px 0}
+  /* custom tables — same un-generic style as the deck */
+  .tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card);margin:0 0 18px}
+  table.tbl{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;min-width:520px}
+  table.tbl thead th{background:var(--ink);color:#EFE7D6;font-family:var(--mono);font-size:11px;
+    font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:11px 14px;text-align:left;white-space:nowrap}
+  table.tbl tbody td{padding:10px 14px;border-top:1px solid var(--line);font-size:13.5px;color:var(--ink-2);vertical-align:top}
+  table.tbl tbody tr:nth-child(even){background:rgba(31,110,99,.045)}
+  table.tbl tbody td code{background:#e4dcc8}
+  .docfoot{max-width:760px;margin:0 auto;padding:22px 24px 60px;border-top:1px solid var(--line);
+    color:var(--faint);font-size:13px}
+  .docfoot a{color:var(--teal-d)}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a class="back" href="https://elenarumiru.github.io/word-tangle/">← Word Tangle · case study</a>
+  <span class="lbl">Баланс · формула и веса</span>
+</div>
+<header class="hero">
+  <div class="eyebrow">Баланс · формула и веса</div>
+  <h1>Balance notes — 100-level difficulty curve</h1>
+</header>
+<main class="article">
+
+<p>Пара к <code>balance-100-levels.xlsx</code> / <code>.csv</code>. Модель, веса, логика ступеней, мостик к экономике и<br />
+ограничения. Deliverable фазы 5. Контракт с прототипом: строки 1, 12, 23, 34, 45, 56, 67, 78, 89, 100<br />
+воспроизводят P1–P8 и <code>difficulty_score</code> десяти уровней прототипа (<code>levels.json</code>) в пределах ±0.15.</p>
+<hr />
+<h2>1. Формула difficulty_score</h2>
+<p>Сложность — <strong>взвешенная сумма нормированных параметров P1–P8</strong> (не «слова длиннее»). Каждый<br />
+параметр нормируется в <code>[0,1]</code> по своему дизайн-диапазону, поэтому <strong>вес = максимальный вклад<br />
+этого параметра в очки сложности при полном размахе</strong>. В xlsx это формула в ячейке (лист <code>Table</code>,<br />
+колонка <code>difficulty_score</code>), ссылающаяся на веса на листе <code>Model</code> (B4–B12) и на P-ячейки своей строки:</p>
+<pre><code>score = FLOOR
+      + w1 · (P1−1)/4          # words_count, диапазон 1..5
+      + w2 · (P2−4)/4          # word_len_max, 4..8
+      + w3 · (P3−1)/5          # zipf_band, 1..6
+      + w4 ·  P4               # scramble_score, уже 0..1
+      + w5 · (P5)/2            # trap_anagrams, 0..2
+      + w6 · (P6−3)/11         # answer_letters, 3..14
+      + w7 ·  enc(P7)          # pun_type: direct=0, idiom=.33, homophone=.66, double-layer=1.0
+      + w8 · (5−P8)/4          # cartoon_transparency инвертирован: 5=легко→0, 1=сложно→1
+</code></pre>
+<p><code>enc(P7)</code> в Excel реализован вложенным <code>IF</code> по строковому значению <code>pun_type</code>.</p>
+<h3>Веса (лист <code>Model</code>) и почему такие</h3>
+<div class="tblwrap"><table class="tbl">
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Вес (макс. вклад)</th>
+<th>Доля от размаха</th>
+<th>Обоснование (вклад ≈ влияние на время решения)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>P1</strong> words_count</td>
+<td><strong>3.29</strong></td>
+<td><strong>41 %</strong></td>
+<td>Число слов — грубый регулятор длины уровня: каждое новое слово — отдельный акт unscramble + удержание в памяти. Линейно множит работу → сильнейший драйвер медианного времени.</td>
+</tr>
+<tr>
+<td><strong>P4</strong> scramble_score</td>
+<td><strong>2.35</strong></td>
+<td><strong>29 %</strong></td>
+<td>Разрушение биграмм — главный рычаг «залипания» скрэмбла (research §4 п.5; jumble-analysis). На 0–1 шкале с большим весом: переход 0.33→0.70 в одном слове кратно удлиняет поиск.</td>
+</tr>
+<tr>
+<td><strong>P2</strong> word_len_max</td>
+<td>0.90</td>
+<td>11 %</td>
+<td>Длина слова растит пространство перестановок (факториально), но с потолком читаемости на 6"; вклад заметный, но вторичный к «сколько слов».</td>
+</tr>
+<tr>
+<td><strong>P7</strong> pun_type</td>
+<td>0.60</td>
+<td>7.5 %</td>
+<td>Когнитивная сложность кульминации: direct → idiom → homophone → double-layer. Двухслойный каламбур требует «додумать» связь — но это разовый акт на уровень, поэтому вклад умеренный.</td>
+</tr>
+<tr>
+<td><strong>P5</strong> trap_anagrams</td>
+<td>0.35</td>
+<td>4.4 %</td>
+<td>Ложная анаграмма в пуле уводит в тупик; штраф времени есть, но игрок обычно выкарабкивается — не доминирующий фактор.</td>
+</tr>
+<tr>
+<td><strong>P6</strong> answer_letters</td>
+<td>0.33</td>
+<td>4.1 %</td>
+<td>Длина финального ответа; сильно коррелирует с P1/P2, поэтому во взвешенной сумме несёт свой небольшой остаточный вклад, чтобы не задваивать.</td>
+</tr>
+<tr>
+<td><strong>P3</strong> zipf_band</td>
+<td>0.10</td>
+<td>1.2 %</td>
+<td>Редкость лексики. Мал по одной причине (см. §5, ограничения): в 10 якорях P3 почти монотонно растёт вместе с P4/P8, и линейная модель не может отделить его собственный вклад — он «поглощён» P4. Оставлен положительным (не ноль), чтобы редкая лексика всё же добавляла сложности.</td>
+</tr>
+<tr>
+<td><strong>P8</strong> cartoon_transparency (инв.)</td>
+<td>0.10</td>
+<td>1.2 %</td>
+<td>Прозрачность карикатуры. Та же коллинеарность, что у P3: держим маленький положительный вклад, чтобы «намекающая» карикатура читалась как облегчение.</td>
+</tr>
+<tr>
+<td><code>FLOOR</code></td>
+<td>0.0765</td>
+<td>—</td>
+<td>Пол шкалы (базовая когнитивная стоимость даже тривиального уровня).</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Калибровка весов.</strong> Веса не подобраны «на глаз»: это решение <strong>минимаксной задачи</strong> (LP), которая<br />
+минимизирует максимальную ошибку воспроизведения 10 якорей, при ограничениях (а) все веса ≥ 0<br />
+(отрицательный вклад параметра бессмысленен), (б) иерархия дизайна: <code>w(P2)</code> ограничен сверху, чтобы<br />
+длина слова не перевешивала «сколько слов» и «насколько зол скрэмбл». Достигнутый максимум ошибки по<br />
+якорям — <strong>0.149 &lt; 0.15</strong>. Файл-калибратор и проверка — <code>build_balance.py</code> / <code>verify_balance.py</code>.</p>
+<blockquote>
+<p>Почему нормированная сумма, а не «сырые» веса из <code>levels-design.md</code>. Рамочная формула из фазы 1<br />
+(<code>0.9·P1 + … + 0.30·(6−P8)</code>) была помечена как <em>ориентировочная</em>. При прямом применении она даёт<br />
+ошибку до 0.35 на краях (v1, v100 авторски заданы «круглыми» и не ложатся на чистую линейную<br />
+модель). Нормировка в <code>[0,1]</code> + минимакс дают попадание в допуск и одновременно человекочитаемые<br />
+веса («сколько очков максимум даёт параметр»).</p>
+</blockquote>
+<hr />
+<h2>2. Кривая: тренд + пила + передышки + майлстоуны</h2>
+<ul>
+<li><strong>Тренд</strong> — сублинейный: значения P1–P8 интерполируются между якорями так, что ранний прирост<br />
+  ощущается сильнее позднего (P1 берёт вторую… пятую единицу всё реже; P4 растёт с насыщением).<br />
+  Средний score первой десятки ≈ 1.2, последней ≈ 6.2.</li>
+<li><strong>Пила</strong> — на непрерывном P4 наложена детерминированная осцилляция (<code>sawtooth</code>): <strong>+спайк на каждом<br />
+  10-м уровне, −передышка на уровне сразу после</strong>, плюс мягкие микро-волны в середине блока.<br />
+  Амплитуда ~10–15 % локального размаха. В якорных точках осцилляция = 0 (значения запинены).</li>
+<li><strong>Передышки</strong> — после каждого milestone-спайка score падает (проверка <code>verify_balance.py</code> [4b]<br />
+  подтверждает дипы на 8 из 9 переходов «10-й → 11-й»). Блоки, которые в прототипе идут вниз<br />
+  (v34→v45, v67→v78), интерполируются как гладкие спуски (staggering ступеней отключается на<br />
+  нисходящих блоках, чтобы не появлялись артефактные зубцы).</li>
+<li><strong>Майлстоуны</strong> — колонка <code>notes</code> на каждом 10-м уровне печатает «новинку» (расписание ниже).</li>
+</ul>
+<h3>Расписание новинок (колонка notes, каждый 10-й)</h3>
+<div class="tblwrap"><table class="tbl">
+<thead>
+<tr>
+<th>Уровень</th>
+<th>Новинка</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>10</td>
+<td>первый полноценный 3-словный «разогрев», пик пилы скрэмбла</td>
+</tr>
+<tr>
+<td>20</td>
+<td>омофонный каламбур закрепляется как стандарт блока</td>
+</tr>
+<tr>
+<td>30</td>
+<td>подход к первому 2-словному ответу; появляются ловушки</td>
+</tr>
+<tr>
+<td>40</td>
+<td>2-словные омофоны — рутина; P6 растёт до 9–10</td>
+</tr>
+<tr>
+<td>50</td>
+<td>в ротацию входят идиомы; более длинные слова (P2=6)</td>
+</tr>
+<tr>
+<td>60</td>
+<td>устойчивые ловушки; омофоны при 12-буквенных ответах</td>
+</tr>
+<tr>
+<td>70</td>
+<td>двухслойные каламбуры — стандарт блока; P8 падает до 2</td>
+</tr>
+<tr>
+<td>80</td>
+<td>4-словные уровни ужесточаются; реже лексика (P3=5)</td>
+</tr>
+<tr>
+<td>90</td>
+<td>почти максимальный скрэмбл + двухслойность; подход к «экзамену»</td>
+</tr>
+<tr>
+<td>100</td>
+<td>ТОП-СПАЙК (экзамен): 5 слов, редчайшая лексика, самая косвенная карикатура (P8=1)</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>3. Логика каждой ступени параметров</h2>
+<p>Ступени привязаны к якорям прототипа; между якорями значение держится и переключается один раз,<br />
+чтобы «новинка» ощущалась как событие. Фактические уровни переключения (из готового файла):</p>
+<ul>
+<li><strong>words_count (P1): 1 → 2 (L7) → 3 (L40) → 4 (L62) → 5 (L95).</strong><br />
+  Онбординг (1–6) — одно слово, гарантированный успех. Второе слово приходит на L7 — это самый<br />
+  заметный ранний скачок и он намеренно один (не стакается с другими ступенями). Пятое слово<br />
+  приходит только на L95 — это «пятикратный» финальный вызов перед экзаменом.</li>
+<li><strong>word_len_max (P2): 4 → 5 (L31) → 6 (L49) → …</strong> растёт медленно и с откатами в блоках-передышках<br />
+  (потолок читаемости на 6" — 6–7 букв, выше не идём).</li>
+<li><strong>zipf_band (P3): 1 → … → 6.</strong> Самый частый шаг (меняется ~9 раз): редкость лексики — плавный<br />
+  фоновый регулятор, а не событие. На передышках откатывается в топ-банд (дыхание лёгкой лексикой).</li>
+<li><strong>scramble_score (P4):</strong> непрерывный, интерполируется + пила. Главный носитель «зубцов» кривой.</li>
+<li><strong>trap_anagrams (P5): 0 → 1 (L31) …</strong> первая ловушка появляется на подходе к первому спайку<br />
+  2-словных ответов — раньше её нет (онбординг без обманок, research §5).</li>
+<li><strong>answer_words (P6-компонент): 1 → 2 (L29).</strong> Первый двухсловный ответ — на подходе к майлстоуну 30.</li>
+<li><strong>pun_type (P7): direct → idiom/homophone (L20) → … → double-layer.</strong> Категориальный, переключается<br />
+  один раз за блок и <strong>поздно</strong> (ближе к концу блока), чтобы смена типа каламбура не совпадала со<br />
+  ступенями P1/P6 и не давала двойной скачок.</li>
+<li><strong>cartoon_transparency (P8): 5 → … → 1.</strong> Прозрачность падает ступенями к финалу; на передышках<br />
+  карикатура снова «подсказывает» (P8 выше) — визуальное облегчение.</li>
+</ul>
+<hr />
+<h2>4. Мостик к экономике подсказок и офферам</h2>
+<p>Кривая — не самоцель, а насос для мягкой валюты и (в полной игре) для мест офферов. <code>free_hint_worth</code><br />
+(4→10 монет) растёт медленнее стоимости подсказки: по research доход за уровень намеренно держат<br />
+<strong>ниже</strong> цены хинта (2–4 монеты дохода против 25–100 за раскрытие буквы), чтобы копился управляемый<br />
+дефицит. Спайки на каждом 10-м уровне — это точки максимального <code>target_hint_usage</code> (до ~70 % на<br />
+топ-уровнях), то есть места, где игрок с наибольшей вероятностью тратит валюту, а неплатящий смотрит<br />
+rewarded-video: <strong>майлстоун-спайк = естественный слот для оффера/rewarded-ad</strong>, а передышка сразу<br />
+после — момент «победы даром», оберегающий ощущение честности. Так difficulty-кривая напрямую задаёт<br />
+ритм монетизации: пилообразная сложность порождает пилообразный спрос на подсказки, а майлстоуны<br />
+служят якорями для IAP-промо и наградной рекламы, не ломая уютного тона (никаких таймеров и штрафов).</p>
+<hr />
+<h2>5. Ограничения модели и что калибровал бы плейтестом</h2>
+<ul>
+<li><strong>Коллинеарность параметров.</strong> В 10 якорях P3 (редкость), P4 (скрэмбл) и P8 (прозрачность) растут<br />
+  почти синхронно. Линейная модель не может честно разделить их индивидуальный вклад и «сваливает»<br />
+  его в P4; поэтому веса P3 и P8 малы (1.2 %). На реальных данных (когда уровни варьируют эти<br />
+  параметры независимо) веса надо пере-оценить регрессией по времени решения — сейчас они<br />
+  дизайн-разумны, но статистически недоразделены.</li>
+<li><strong>Онбординговая нелинейность.</strong> Якоря v1=1.0 и v12=1.6 авторски «круглые» и задают более крутой<br />
+  старт, чем предполагает линейный тренд по остальным 8 точкам. Отсюда остаточная ошибка ±0.149 именно<br />
+  на краях. Это осознанный компромисс: не переобучать модель до отрицательных весов ради двух точек.</li>
+<li><strong><code>target_solve_time_sec</code> и <code>target_hint_usage_pct</code> — гипотезы до данных.</strong> Время откалибровано так,<br />
+  чтобы score-лестница легла на солв-тайм якоря прототипа (v1 ~25 с, v34 ~100 с, v100 ~195 с), но<br />
+  реальная медиана зависит от аудитории, ввода (tap-to-place vs swipe) и качества карикатур. Первое,<br />
+  что я мерил бы плейтестом: (1) фактическое медианное время по уровням → перекалибровать <code>a,b</code> в<br />
+  формуле времени и, если надо, веса; (2) точки массового отвала (churn) — не совпадают ли они со<br />
+  спайками (тогда сгладить амплитуду пилы); (3) конверсия hint/rewarded-ad на майлстоунах — подтвердить<br />
+  гипотезу «спайк = слот оффера».</li>
+<li><strong>Дискретность vs гладкость.</strong> Несколько межблоковых скачков (L7 «второе слово», L62, L95 «пятое<br />
+  слово») велики (~0.9) — но они семантически осмысленны (появление новой единицы контента), а не<br />
+  артефакт. Если плейтест покажет, что они выбивают, их можно распределить на 2 уровня.</li>
+</ul>
+<hr />
+<h2>6. Проверка (verify_balance.py)</h2>
+<p><code>python verify_balance.py</code> открывает готовый xlsx (<code>data_only=False</code>) и проверяет:<br />
+[1] ровно 100 строк данных; [2] в колонке <code>difficulty_score</code> <strong>все 100 ячеек — формулы</strong> (начинаются<br />
+с <code>=</code>); [3] пересчёт формулы из P-ячеек воспроизводит 10 якорей в пределах ±0.15 <strong>и</strong> P1–P8 якорных<br />
+строк совпадают с прототипом; [4] тренд возрастает (early avg &lt; late avg) и есть пила (дипы после<br />
+спайков). Текущий прогон: <strong>ALL CHECKS PASS</strong>, worst anchor err = 0.149.</p>
+</main>
+<footer class="docfoot">
+  Документ проекта Word Tangle. <a href="https://elenarumiru.github.io/word-tangle/">← вернуться к презентации</a>
+</footer>
+</body>
+</html>

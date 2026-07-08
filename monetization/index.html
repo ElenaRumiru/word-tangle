@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scroll Puzzle — переход с ads-only на гибридную монетизацию — Word Tangle</title>
+<style>
+  :root{
+    --paper:#F1EBDD; --card:#FBF8F1; --ink:#1B2430; --ink-2:#2A3541; --soft:#55606B;
+    --faint:#8A8574; --line:#DcD2BF; --teal:#1F6E63; --teal-d:#17544c; --amber:#E2853F;
+    --display:"Helvetica Neue",Arial,"Segoe UI",system-ui,sans-serif;
+    --body:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --mono:"SF Mono","Cascadia Code",Consolas,ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.65;
+    -webkit-font-smoothing:antialiased}
+  .topbar{position:sticky;top:0;z-index:10;background:rgba(241,235,221,.92);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);padding:11px 22px;display:flex;align-items:center;gap:14px}
+  .topbar a.back{font-family:var(--mono);font-size:12.5px;font-weight:700;color:var(--teal-d);
+    text-decoration:none;display:inline-flex;gap:6px;align-items:center}
+  .topbar a.back:hover{color:var(--teal)}
+  .topbar .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--soft);margin-left:auto}
+  .hero{max-width:800px;margin:0 auto;padding:44px 24px 6px}
+  .hero .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--teal);font-weight:600}
+  .hero h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,4.6vw,42px);
+    letter-spacing:-.02em;margin:12px 0 0;text-wrap:balance;line-height:1.05}
+  .article{max-width:760px;margin:0 auto;padding:22px 24px 90px}
+  .article>*:first-child{margin-top:0}
+  .article h2{font-family:var(--display);font-weight:800;font-size:25px;margin:40px 0 12px;
+    padding-top:18px;border-top:1px solid var(--line);letter-spacing:-.01em}
+  .article h3{font-family:var(--display);font-weight:700;font-size:19px;margin:26px 0 8px}
+  .article h4{font-family:var(--display);font-weight:700;font-size:16px;margin:20px 0 6px;color:var(--teal-d)}
+  .article p{margin:0 0 14px}
+  .article ul,.article ol{margin:0 0 15px;padding-left:22px}
+  .article li{margin:5px 0}
+  .article li>ul,.article li>ol{margin:6px 0}
+  .article a{color:var(--teal-d);text-underline-offset:3px}
+  .article strong{color:var(--ink);font-weight:700}
+  .article code{font-family:var(--mono);font-size:.88em;background:#ece2cd;padding:1px 6px;
+    border-radius:5px;color:#8a5a24;word-break:break-word}
+  .article pre{background:var(--ink);color:#EFE7D6;padding:16px 18px;border-radius:12px;
+    overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.55;margin:0 0 16px}
+  .article pre code{background:none;padding:0;color:inherit;font-size:inherit}
+  .article blockquote{border-left:3px solid var(--teal);background:var(--card);margin:0 0 15px;
+    padding:12px 16px;border-radius:0 10px 10px 0;color:var(--ink-2)}
+  .article blockquote p:last-child{margin:0}
+  .article hr{border:none;border-top:1px solid var(--line);margin:30px 0}
+  /* custom tables — same un-generic style as the deck */
+  .tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card);margin:0 0 18px}
+  table.tbl{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;min-width:520px}
+  table.tbl thead th{background:var(--ink);color:#EFE7D6;font-family:var(--mono);font-size:11px;
+    font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:11px 14px;text-align:left;white-space:nowrap}
+  table.tbl tbody td{padding:10px 14px;border-top:1px solid var(--line);font-size:13.5px;color:var(--ink-2);vertical-align:top}
+  table.tbl tbody tr:nth-child(even){background:rgba(31,110,99,.045)}
+  table.tbl tbody td code{background:#e4dcc8}
+  .docfoot{max-width:760px;margin:0 auto;padding:22px 24px 60px;border-top:1px solid var(--line);
+    color:var(--faint);font-size:13px}
+  .docfoot a{color:var(--teal-d)}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a class="back" href="https://elenarumiru.github.io/word-tangle/">← Word Tangle · case study</a>
+  <span class="lbl">Монетизация · полный план a→d</span>
+</div>
+<header class="hero">
+  <div class="eyebrow">Монетизация · полный план a→d</div>
+  <h1>Scroll Puzzle — переход с ads-only на гибридную монетизацию</h1>
+</header>
+<main class="article">
+
+<p>Продюсер монетизации F2P. База фактов — <code>docs/01-research/scroll-puzzle-research.md</code>; всё, чего там нет, помечено <strong>[допущение]</strong>. Расчётная модель — <code>deliverables/monetization/hybrid-model.xlsx</code> (формулы в ячейках, 3 сценария).</p>
+<p><strong>Стартовая точка (факты из research):</strong><br />
+- Игра свежая (софт-ланч ~середина мая 2026), фаза раннего разгона UA (~300 загрузок/день, ~18K всего).<br />
+- Кор-луп: tile-sliding пазл, свести 4 фрагмента картинки; уровни короткие (~1-3 мин [допущение]); «no timers, no stress».<br />
+- Мета: только коллекции (200+ 3D-персонажей в 20 коллекциях) + галерея. Battle pass, ивентов, лидербордов нет.<br />
+- <strong>Coins есть, но тратить фактически некуда</strong> — экономика недозамкнута.<br />
+- <strong>Монетизация ad-first.</strong> В листинге Google Play стоят <strong>обе</strong> пометки — «Есть реклама» И «Покупки в приложении», то есть формулировка «только реклама» неточна; но состав IAP не подтверждён ни одним отзывом (флаг, вероятно, «про запас» либо remove-ads с нулевым весом). Фактически деньги идут с рекламы.<br />
+- <strong>Главная жалоба игроков — частота interstitial:</strong> после каждого короткого уровня И <strong>посреди уровня</strong>, включается примерно с 14-го уровня. При крошечной базе отзывов это заметная доля негатива, вплоть до «удаляю».<br />
+- Издатель Multicast Games — hybrid-casual конвейер, у которого есть <strong>успешный кейс гибрида 50/50 IAP/IAA</strong> (Alien Invasion: RPG Idle Space, вся ad-выручка — только rewarded, без принудительных interstitial, ROAS UA ~200%). То есть студия умеет и практикует гибрид — плейбук известен.</p>
+<p><strong>Стратегическая рамка.</strong> Мы не «добавляем IAP к рекламе». Мы строим <strong>одну экономику</strong>, которую кормят и реклама (rewarded), и покупки (coin-паки), и снимаем главный источник оттока (агрессивные interstitial), заместив его выручку rewarded + IAP. Это ровно та конфигурация, где переход на гибрид даёт прирост total ARPDAU без потери retention.</p>
+<hr />
+<h2>a) Гипотезы, внедрение и последовательность апдейтов</h2>
+<h3>Гипотезы (формат «если → то → потому что»)</h3>
+<p><strong>H1 — Экономика бустеров (фундамент гибрида).</strong><br />
+<strong>ЕСЛИ</strong> ввести трату coins на бустеры (подсказка «где пара фрагментов», авто-сбор одного фрагмента, undo хода) и добавить два rewarded-плейсмента («монеты ×2 после уровня», «бустер за просмотр»), <strong>ТО</strong> появится спрос на coins → откроется IAP-канал (паки монет) и вырастет rewarded opt-in, а total ARPDAU вырастет на ~60-110% в базовом сценарии (с ~$0.059 до ~$0.107 после U1), <strong>ПОТОМУ ЧТО</strong> сейчас у coins нет sink'а — их некуда девать, значит нечего продавать и нечего давать за просмотр; у издателя тот же контур (rewarded + IAP на одну экономику) уже дал 50/50 в Alien Invasion, а бенчмарк puzzle-гибрида — блендед ARPDAU $0.15-0.50 против $0.03-0.08 у чистой рекламы.</p>
+<p><strong>H2 — Remove-ads SKU + смягчение interstitial.</strong><br />
+<strong>ЕСЛИ</strong> убрать interstitial из <strong>середины</strong> уровня (главная жалоба), поставить частотный кап после уровней и добавить SKU «Remove Ads» ($4.99, сохраняющий rewarded), <strong>ТО</strong> retention D1 подрастёт (+1.2 п.п. в базе [допущение]), interstitial per DAU упадёт с ~6.5 до ~4.0, и это откроет первый платёж у ad-averse сегмента; ad-ARPDAU просядет, <strong>НО</strong> total ARPDAU не упадёт ниже уровня U1 после подключения офферов, <strong>ПОТОМУ ЧТО</strong> прерывание посреди короткого уровня — худший UX-паттерн для relaxing-пазла (ломает сессию, генерит удаления), а сэкономленный retention конвертится в больше сессий → больше rewarded-показов и больше окон для покупки; remove-ads — стандартный первый IAP casual-гибрида (Wordscapes, Words of Wonders).</p>
+<p><strong>H3 — Оффер-слой (starter pack + piggy bank).</strong><br />
+<strong>ЕСЛИ</strong> после запуска экономики добавить одноразовый starter pack (дёшево: монеты + бустеры + N дней без interstitial) и piggy bank (копилка монет за прогресс, выкуп за $), <strong>ТО</strong> вырастет конверсия в первого платящего и средний чек (base: conv 1.0%→1.7% DAU/день, ATV $3.8→$5.0), а total ARPDAU выйдет на ~$0.143 (+145% к baseline), <strong>ПОТОМУ ЧТО</strong> starter pack снижает порог первого платежа (якорь ценности в первые сессии), а piggy bank ловит игроков, которым «жалко потерять накопленное» — оба паттерна проверены в word/puzzle-гибридах и работают только поверх уже существующей экономики монет из H1.</p>
+<p><strong>H4 — Платная мета коллекций (осторожно, дальше от ядра).</strong><br />
+<strong>ЕСЛИ</strong> монетизировать единственную существующую мету — премиум-коллекции/темы, «сундук коллекционера» за coins или $, <strong>ТО</strong> появится второй IAP-сток и повод возвращаться (ретеншн-хук), <strong>ПОТОМУ ЧТО</strong> коллекции — это то, ради чего игроки уже играют («для тех, кто любит искусство»); <strong>НО</strong> это дороже в разработке (нужен арт-контент, гарантии дропа/pity) и дальше от кор-лупа, поэтому — только по результатам H1-H3, не в первых трёх апдейтах. Помечаю как кандидат на LiveOps-фазу, не как коммит.</p>
+<h3>Последовательность апдейтов (обоснование зависимостями)</h3>
+<p>Порядок продиктован зависимостями, а не «что проще»: <strong>без экономики монет IAP нечего продавать, а rewarded нечем наполнить</strong>, поэтому H1 — обязательный фундамент.</p>
+<div class="tblwrap"><table class="tbl">
+<thead>
+<tr>
+<th>#</th>
+<th>Апдейт</th>
+<th>Гипотезы</th>
+<th>Срок [допущение]</th>
+<th>Зависимость</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>U1</strong></td>
+<td>Экономика бустеров + rewarded</td>
+<td>H1</td>
+<td>Спринт 1-2 (~3-4 нед)</td>
+<td>Фундамент. Ничто не идёт раньше.</td>
+</tr>
+<tr>
+<td><strong>U2</strong></td>
+<td>Remove-ads + смягчение interstitial</td>
+<td>H2</td>
+<td>Параллельно U1 или сразу за ним (~2 нед)</td>
+<td>Дёшево, не зависит от экономики. Убирает главный отток.</td>
+</tr>
+<tr>
+<td><strong>U3</strong></td>
+<td>Оффер-слой (starter pack, piggy bank)</td>
+<td>H3</td>
+<td>Спринт 3 (~3 нед), после U1</td>
+<td>Офферам нужен контент экономики (монеты/бустеры) из U1.</td>
+</tr>
+<tr>
+<td><strong>U4</strong></td>
+<td>Платная мета коллекций</td>
+<td>H4</td>
+<td>По результатам U1-U3</td>
+<td>Only если конверсия/ARPDAU подтвердят спрос. Не коммит.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Почему U2 идёт рано и параллельно.</strong> Смягчение interstitial — самая дешёвая правка (конфиг частоты + выпил mid-level плейсмента) и она бьёт по причине №1 оттока. Откладывать её нельзя: каждый день агрессивной рекламы жжёт retention свежей когорты. Единственный риск — краткосрочная просадка ad-ARPDAU, и её мы сознательно принимаем (см. раздел d — каннибализация).</p>
+<p><strong>Важная честная оговорка по кривой.</strong> В модели total ARPDAU на шаге <strong>U2 временно ниже U1</strong> (interstitial порезали, а офферы ещё не подключили: base $0.107 → $0.094). Это ожидаемый провал, а не ошибка. Поэтому U3 должен следовать за U2 близко (в течение ~4-6 недель), чтобы оффер-слой добрал выручку раньше, чем менеджмент испугается просадки. Именно из-за этого провала U2 тестируется на retention/LTV-горизонте, а не по одному ad-ARPDAU.</p>
+<h3>Способ теста (единый для всех апдейтов)</h3>
+<ul>
+<li><strong>A/B на % трафика новых установок:</strong> контрольная группа (старая конфигурация) vs тест (новая). Сплит 50/50 на новых когортах; старые игроки не мигрируются в середине теста.</li>
+<li><strong>Длительность:</strong> ≥2 недели на когорту (нужно добить D7 и увидеть ранний D14/repeat purchase); для LTV-чувствительных апдейтов (U2) — 3-4 недели до чтения D30-прокси.</li>
+<li><strong>Критерий успеха</strong> (базовый, детализация в разделе c): total ARPDAU теста ≥ контроль при retention D1/D7 не ниже контроля −1 п.п.</li>
+<li><strong>Критерий отката:</strong> retention D1 теста ниже контроля более чем на 1 п.п. ИЛИ total ARPDAU ниже контроля по итогам 2 недель ИЛИ crash-free &lt; 99.0% — откатываем плейсмент/фичу и разбираем причину.</li>
+</ul>
+<hr />
+<h2>b) Постановка задачи команде — Апдейт U1 «Экономика бустеров + rewarded»</h2>
+<blockquote>
+<p>Реальный одностраничный документ для первого апдейта. Не ТЗ — рамка, из которой каждый берёт свою часть.</p>
+</blockquote>
+<p><strong>Апдейт U1: Экономика бустеров + rewarded-реклама</strong><br />
+Владелец: продюсер монетизации. Цель релиза: замкнуть экономику монет и запустить гибридный контур (rewarded + IAP на одну валюту).</p>
+<p><strong>Зачем (проблема в цифрах).</strong><br />
+Игра монетизируется почти только interstitial-рекламой. Coins начисляются за уровни, но <strong>тратить их некуда</strong> — экономика разомкнута, IAP-канала фактически нет, rewarded не используется (потому что нет награды, которую игрок хотел бы). Одновременно частота interstitial — жалоба №1 в отзывах (ломает короткие уровни, есть удаления). Мы теряем и деньги (не берём rewarded ~$15-25 eCPM и IAP), и игроков. U1 закрывает первую половину: даёт монетам смысл и открывает два новых денежных канала, не трогая пока рекламу.</p>
+<p><strong>Что делаем (скоуп).</strong><br />
+- Вводим <strong>3 бустера</strong>, покупаемые за coins: подсказка «где пара фрагментов», авто-сбор одного фрагмента, undo последнего хода.<br />
+- Балансируем <strong>выдачу coins за уровень</strong> так, чтобы бустеры были желанны, но не бесплатны (целевой sink/source ≈ 0.6-0.8 [допущение, донастроим по данным]).<br />
+- Добавляем <strong>2 rewarded-плейсмента:</strong> «монеты ×2 за просмотр» на экране результата уровня и «бустер за просмотр» на экране выбора бустера. Оба строго <strong>opt-in</strong>.<br />
+- Добавляем <strong>IAP-магазин с 3-4 паками монет</strong> (напр. $0.99 / $2.99 / $4.99 / $9.99 — финальные цены за GD).<br />
+- Логируем <strong>полный набор ивентов</strong> экономики и рекламы (см. раздел c) — без этого апдейт не читается.</p>
+<p><strong>Что НЕ делаем в U1.</strong> Не трогаем interstitial (это U2). Не делаем starter pack / piggy bank (U3). Не трогаем мету коллекций (U4). Не вводим вторую валюту. Не даём бустеры в долг/бесплатно пачками.</p>
+<p><strong>Как поймём, что получилось</strong> (тест A/B, 50/50 на новых когортах, ≥2 недели):<br />
+- <strong>Total ARPDAU (ad+IAP) теста ≥ контроль</strong>, цель +50% и выше (base-модель: $0.059 → $0.107).<br />
+- <strong>Rewarded opt-in rate ≥ 25%</strong> от показанных офферов [допущение-цель].<br />
+- <strong>Conversion to payer ≥ 0.8%</strong> DAU/день на coin-паках.<br />
+- <strong>Guardrail:</strong> retention D1/D7 не ниже контроля −1 п.п.; crash-free ≥ 99.0%; средняя скорость прохождения уровня не выросла аномально (бустеры не должны «сломать» сложность).</p>
+<p><strong>Кому что.</strong><br />
+- <strong>Game Designer:</strong> баланс coins per level ↔ цена бустеров ↔ цены coin-паков; таблица наград rewarded ×2; конфиг sink/source.<br />
+- <strong>Dev:</strong> бустеры, rewarded-интеграция (SDK-медиатор), IAP-магазин и валидация покупок на сервере, инструментирование всех ивентов раздела c.<br />
+- <strong>UI/UX:</strong> экран результата с кнопкой «монеты ×2», экран выбора бустера, магазин монет; без dark-паттернов, opt-in явный.<br />
+- <strong>QA:</strong> кейсы покупки/восстановления IAP, отмена rewarded в середине, отсутствие награды при недосмотре ролика, баланс не ломается на бустерах, оффлайн/повторный запуск.<br />
+- <strong>Аналитик:</strong> дашборд A/B (ARPDAU-декомпозиция ad+IAP, opt-in, conv, retention-guardrail), проверка что все ивенты долетают и метрики считаются.</p>
+<hr />
+<h2>c) Метрики и ивенты</h2>
+<h3>Ивенты (что логируем)</h3>
+<p>Параметры в фигурных скобках — обязательные поля события.</p>
+<div class="tblwrap"><table class="tbl">
+<thead>
+<tr>
+<th>Ивент</th>
+<th>Параметры</th>
+<th>Зачем</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>session_start</code></td>
+<td><code>{session_number, ts}</code></td>
+<td>сессии/DAU, длина сессии, retention</td>
+</tr>
+<tr>
+<td><code>session_end</code></td>
+<td><code>{duration_s, levels_played}</code></td>
+<td>длина/глубина сессии</td>
+</tr>
+<tr>
+<td><code>level_start</code></td>
+<td><code>{level_id, level_index}</code></td>
+<td>воронка уровней, скорость прохождения</td>
+</tr>
+<tr>
+<td><code>level_complete</code></td>
+<td><code>{level_id, duration_s, boosters_used, coins_earned}</code></td>
+<td>уровни/DAU, coins source, guardrail скорости</td>
+</tr>
+<tr>
+<td><code>level_fail</code></td>
+<td><code>{level_id, duration_s}</code></td>
+<td>сложность, точки оттока</td>
+</tr>
+<tr>
+<td><code>ad_impression</code></td>
+<td><code>{placement, type}</code> type∈{interstitial,rewarded,banner}, placement∈{post_level,mid_level,result_x2,booster_grant}</td>
+<td>interstitial/DAU, rewarded/DAU, ad-ARPDAU по типам</td>
+</tr>
+<tr>
+<td><code>ad_offer_shown</code></td>
+<td><code>{placement, type}</code></td>
+<td>знаменатель rewarded opt-in</td>
+</tr>
+<tr>
+<td><code>ad_offer_accepted</code></td>
+<td><code>{placement, type}</code></td>
+<td>числитель rewarded opt-in</td>
+</tr>
+<tr>
+<td><code>ad_reward_granted</code></td>
+<td><code>{placement, reward_type, reward_amount}</code></td>
+<td>связка rewarded → выданная награда (coins/booster)</td>
+</tr>
+<tr>
+<td><code>coins_earned</code></td>
+<td><code>{amount, source}</code> source∈{level,rewarded_x2,offer,piggy}</td>
+<td>source экономики, sink/source ratio</td>
+</tr>
+<tr>
+<td><code>coins_spent</code></td>
+<td><code>{amount, sink}</code> sink∈{booster_hint,booster_autocollect,booster_undo,collection}</td>
+<td>sink экономики, спрос на бустеры</td>
+</tr>
+<tr>
+<td><code>booster_used</code></td>
+<td><code>{type, level_id, acquired_via}</code> acquired_via∈{coins,rewarded,iap,offer}</td>
+<td>какой бустер тянет, откуда берут</td>
+</tr>
+<tr>
+<td><code>iap_shown</code></td>
+<td><code>{sku, price, surface}</code></td>
+<td>знаменатель IAP-конверсии по surface</td>
+</tr>
+<tr>
+<td><code>iap_initiated</code></td>
+<td><code>{sku, price}</code></td>
+<td>воронка покупки (drop-off)</td>
+</tr>
+<tr>
+<td><code>iap_completed</code></td>
+<td><code>{sku, price, currency}</code></td>
+<td>conversion to payer, ARPDAU IAP, repeat purchase, ATV</td>
+</tr>
+<tr>
+<td><code>remove_ads_purchased</code></td>
+<td><code>{price}</code></td>
+<td>remove-ads ARPDAU, размер ad-free когорты</td>
+</tr>
+<tr>
+<td><code>piggy_full</code></td>
+<td><code>{coins_accumulated}</code></td>
+<td>триггер оффера (U3)</td>
+</tr>
+<tr>
+<td><code>piggy_purchase</code></td>
+<td><code>{price, coins_released}</code></td>
+<td>конверсия piggy (U3)</td>
+</tr>
+<tr>
+<td><code>offer_shown</code> / <code>offer_purchased</code></td>
+<td><code>{offer_id, price}</code></td>
+<td>конверсия starter pack / офферов (U3)</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Метрики (что смотрим) и попарная проверка «ивент → метрика»</h3>
+<div class="tblwrap"><table class="tbl">
+<thead>
+<tr>
+<th>Метрика</th>
+<th>Из каких ивентов считается</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ARPDAU total = ad + IAP</strong></td>
+<td><code>ad_impression</code> (× eCPM из медиатора) + <code>iap_completed</code> + <code>remove_ads_purchased</code>, / DAU</td>
+</tr>
+<tr>
+<td><strong>Ad-ARPDAU (по типам)</strong></td>
+<td><code>ad_impression{type}</code> × eCPM — отдельно interstitial / rewarded / banner</td>
+</tr>
+<tr>
+<td><strong>IAP-ARPDAU</strong></td>
+<td><code>iap_completed</code> + <code>remove_ads_purchased</code> + <code>offer_purchased</code> / DAU</td>
+</tr>
+<tr>
+<td><strong>Interstitial per DAU</strong></td>
+<td>count <code>ad_impression{type=interstitial}</code> / DAU — ключевой guardrail нагрузки рекламой</td>
+</tr>
+<tr>
+<td><strong>Rewarded opt-in rate</strong></td>
+<td><code>ad_offer_accepted</code> / <code>ad_offer_shown</code> (по placement)</td>
+</tr>
+<tr>
+<td><strong>Conversion to payer</strong></td>
+<td>uniq users с <code>iap_completed</code> / DAU</td>
+</tr>
+<tr>
+<td><strong>Repeat purchase rate</strong></td>
+<td>users с ≥2 <code>iap_completed</code> / users с ≥1</td>
+</tr>
+<tr>
+<td><strong>ATV (средний чек)</strong></td>
+<td>sum(<code>iap_completed.price</code>) / count(<code>iap_completed</code>)</td>
+</tr>
+<tr>
+<td><strong>Retention D1/D7/D30</strong></td>
+<td><code>session_start</code> по когортам install-даты</td>
+</tr>
+<tr>
+<td><strong>Session length / count</strong></td>
+<td><code>session_start</code>/<code>session_end</code> (duration, number)</td>
+</tr>
+<tr>
+<td><strong>Levels per DAU</strong></td>
+<td>count <code>level_complete</code> / DAU</td>
+</tr>
+<tr>
+<td><strong>Sink/source ratio</strong></td>
+<td>sum <code>coins_spent</code> / sum <code>coins_earned</code> — здоровье экономики</td>
+</tr>
+<tr>
+<td><strong>LTV (по когортам)</strong></td>
+<td>накопленный ARPDAU × кривая retention когорты</td>
+</tr>
+<tr>
+<td><strong>Remove-ads adoption</strong></td>
+<td><code>remove_ads_purchased</code> uniq / DAU (steady-state ad-free доля)</td>
+</tr>
+</tbody>
+</table></div>
+<p><em>Проверка выполнена попарно: каждая метрика выше имеет источник в списке ивентов, и каждый ивент кормит ≥1 метрику. Незакрытых метрик без ивента нет.</em></p>
+<h3>Ожидаемые сдвиги по гипотезам + guardrails</h3>
+<div class="tblwrap"><table class="tbl">
+<thead>
+<tr>
+<th>Гипотеза</th>
+<th>Метрика</th>
+<th>Направление / величина (base)</th>
+<th>Guardrail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>H1 (U1)</strong></td>
+<td>total ARPDAU</td>
+<td>↑ $0.059 → $0.107 (+82%)</td>
+<td>retention D1/D7 ≥ контроль −1 п.п.</td>
+</tr>
+<tr>
+<td></td>
+<td>rewarded opt-in</td>
+<td>↑ 0 → ~25-40%</td>
+<td>скорость прохождения не растёт аномально</td>
+</tr>
+<tr>
+<td></td>
+<td>conversion to payer</td>
+<td>↑ 0 → ~0.8-1.0%</td>
+<td>sink/source в коридоре 0.5-0.9</td>
+</tr>
+<tr>
+<td><strong>H2 (U2)</strong></td>
+<td>interstitial/DAU</td>
+<td>↓ ~6.5 → ~4.0</td>
+<td>— (это цель)</td>
+</tr>
+<tr>
+<td></td>
+<td>ad-ARPDAU</td>
+<td>↓ (каннибализация, принимаем)</td>
+<td>total ARPDAU не ниже U1 после U3</td>
+</tr>
+<tr>
+<td></td>
+<td>retention D1</td>
+<td>↑ +1.2 п.п. [допущение]</td>
+<td>crash-free ≥ 99%</td>
+</tr>
+<tr>
+<td></td>
+<td>remove-ads conv</td>
+<td>↑ 0 → ~0.15%/день</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>H3 (U3)</strong></td>
+<td>total ARPDAU</td>
+<td>↑ $0.094 → $0.143 (+52% к U2)</td>
+<td>retention ≥ контроль −1 п.п.</td>
+</tr>
+<tr>
+<td></td>
+<td>ATV</td>
+<td>↑ $3.8 → $5.0</td>
+<td>без агрессивных dark-паттернов оффера</td>
+</tr>
+<tr>
+<td></td>
+<td>conversion to payer</td>
+<td>↑ ~1.0% → ~1.7%</td>
+<td>repeat purchase не падает</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2>d) Расчёт на выдуманных данных</h2>
+<p>Полная модель с формулами в ячейках — <code>deliverables/monetization/hybrid-model.xlsx</code> (листы <strong>Assumptions</strong> — входы, <strong>Model</strong> — ARPDAU-декомпозиция, <strong>Revenue</strong> — помесячная выручка). Ниже — выжимка базового сценария и сводка по трём.</p>
+<p><strong>Метод.</strong> ARPDAU раскладывается на компоненты:<br />
+<code>interstitial = (impr/DAU) × (1 − ad-free доля) × eCPM / 1000</code>, аналогично rewarded; <code>IAP = conv × ATV</code>; <code>remove-ads = daily_buyers × price</code>. Total = ad + IAP. Месячная выручка = total ARPDAU × DAU × 30. Все числа — <strong>выдуманные, но правдоподобные, масштаб post-UA-рампап</strong> (DAU 50-100K), не текущий софт-ланч.</p>
+<h3>Базовый сценарий (DAU 75 000), $ ARPDAU</h3>
+<div class="tblwrap"><table class="tbl">
+<thead>
+<tr>
+<th>Компонент</th>
+<th>BEFORE (ads-only)</th>
+<th>AFTER U1</th>
+<th>AFTER U2</th>
+<th>AFTER U3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Interstitial ARPDAU</td>
+<td>0.0585</td>
+<td>0.0585</td>
+<td>0.0347</td>
+<td>0.0347</td>
+</tr>
+<tr>
+<td>Rewarded ARPDAU</td>
+<td>0.0000</td>
+<td>0.0110</td>
+<td>0.0140</td>
+<td>0.0160</td>
+</tr>
+<tr>
+<td><strong>= Ad ARPDAU</strong></td>
+<td><strong>0.0585</strong></td>
+<td><strong>0.0695</strong></td>
+<td><strong>0.0487</strong></td>
+<td><strong>0.0507</strong></td>
+</tr>
+<tr>
+<td>IAP ARPDAU (паки+офферы)</td>
+<td>0.0000</td>
+<td>0.0380</td>
+<td>0.0380</td>
+<td>0.0850</td>
+</tr>
+<tr>
+<td>Remove-ads ARPDAU</td>
+<td>0.0000</td>
+<td>0.0000</td>
+<td>0.0075</td>
+<td>0.0075</td>
+</tr>
+<tr>
+<td><strong>= IAP ARPDAU</strong></td>
+<td><strong>0.0000</strong></td>
+<td><strong>0.0380</strong></td>
+<td><strong>0.0455</strong></td>
+<td><strong>0.0925</strong></td>
+</tr>
+<tr>
+<td><strong>TOTAL ARPDAU</strong></td>
+<td><strong>0.0585</strong></td>
+<td><strong>0.1075</strong></td>
+<td><strong>0.0942</strong></td>
+<td><strong>0.1432</strong></td>
+</tr>
+<tr>
+<td>Мес. выручка ($75K DAU)</td>
+<td>$131,625</td>
+<td>$241,875</td>
+<td>$212,006</td>
+<td>$322,256</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Каннибализация — явно</h3>
+<ul>
+<li>Interstitial ARPDAU падает с <strong>$0.0585 → $0.0347</strong> к U2 (−41%): порезали mid-level, кап частоты, минус ad-free когорта (3.5% DAU).</li>
+<li>Ad ARPDAU при этом просаживается только до <strong>$0.0487</strong> (rewarded частично компенсирует).</li>
+<li>Но <strong>total ARPDAU всё равно растёт</strong> на каждом финальном шаге: $0.0585 → $0.143 (<strong>+145%</strong> к baseline к U3).</li>
+<li><strong>Честный провал:</strong> на шаге U2 total ARPDAU временно ниже U1 ($0.107 → $0.094), потому что interstitial порезали раньше, чем офферы подключили. U3 добирает выше U1. Вывод для продакшена: U3 не откладывать — держать U2→U3 в пределах ~4-6 недель.</li>
+</ul>
+<h3>Три сценария — TOTAL ARPDAU и месячная выручка</h3>
+<div class="tblwrap"><table class="tbl">
+<thead>
+<tr>
+<th>Сценарий</th>
+<th>DAU</th>
+<th>BEFORE</th>
+<th>U1</th>
+<th>U2</th>
+<th>U3</th>
+<th>Мес. выручка BEFORE → U3</th>
+<th>Δ выручки/мес</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Пессимистичный</td>
+<td>50K</td>
+<td>$0.0385</td>
+<td>$0.0630</td>
+<td>$0.0519</td>
+<td>$0.0734</td>
+<td>$57,750 → $110,166</td>
+<td><strong>+$52,416</strong></td>
+</tr>
+<tr>
+<td><strong>Базовый</strong></td>
+<td>75K</td>
+<td>$0.0585</td>
+<td>$0.1075</td>
+<td>$0.0942</td>
+<td>$0.1432</td>
+<td>$131,625 → $322,256</td>
+<td><strong>+$190,631</strong></td>
+</tr>
+<tr>
+<td>Оптимистичный</td>
+<td>100K</td>
+<td>$0.0825</td>
+<td>$0.1745</td>
+<td>$0.1596</td>
+<td>$0.2539</td>
+<td>$247,500 → $761,655</td>
+<td><strong>+$514,155</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Итог:</strong> total ARPDAU растёт в <strong>1.9x (песс.) — 2.4x (базовый) — 3.1x (опт.)</strong> относительно ads-only, при том что interstitial-выручку мы сознательно урезали. Прирост несут rewarded (H1) + IAP coin-паки (H1) + offer-слой (H3), а remove-ads (H2) закрывает ad-averse сегмент и удерживает retention. Все итоговые ARPDAU лежат в бенчмарке puzzle-гибрида $0.15-0.50 только в оптимистичном сценарии — базовый ($0.143) чуть ниже нижней границы, что реалистично для игры с минимальной метой и без season pass; H4 (платная мета) — резерв роста поверх этого.</p>
+<p><strong>Воспроизводимость.</strong> Все числа выше пересчитываются из листа Assumptions: меняешь жёлтый вход — Model и Revenue пересчитываются формулами. Хардкода в расчётных ячейках нет.</p>
+<hr />
+<h3>Оговорки (что допущение, а не факт)</h3>
+<ul>
+<li>Все numeric-входы модели — <strong>выдуманные</strong> (масштаб взят крупнее текущего софт-ланча по требованию брифа).</li>
+<li>Длина уровня, наличие rewarded/banner, состав IAP, демография — <strong>inference из research</strong> (см. пометки там).</li>
+<li>Cats &amp; Seek как референс <strong>не используется</strong> (это не игра Multicast — Noobzilla).</li>
+<li>Сроки апдейтов (спринты) — плановое допущение, зависит от размера команды.</li>
+</ul>
+</main>
+<footer class="docfoot">
+  Документ проекта Word Tangle. <a href="https://elenarumiru.github.io/word-tangle/">← вернуться к презентации</a>
+</footer>
+</body>
+</html>
