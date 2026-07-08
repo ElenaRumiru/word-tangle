@@ -1,0 +1,101 @@
+level,words_count,word_len_min,word_len_max,zipf_band,scramble_score,trap_anagrams,answer_letters,answer_words,pun_type,cartoon_transparency,free_hint_worth,target_solve_time_sec,target_hint_usage_pct,difficulty_score,curve_role,notes
+1,1,4,4,1,0.33,0,3,1,direct,5,4,25,3,0.851,milestone,"Tutorial floor: 1 word, top lexicon, no traps, direct pun"
+2,1,4,4,1,0.3,0,3,1,direct,5,4,23,3,0.781,ramp,
+3,1,4,4,1,0.33,0,3,1,direct,5,4,25,3,0.851,ramp,
+4,1,4,4,1,0.36,0,3,1,direct,5,4,27,3,0.921,ramp,
+5,1,4,4,2,0.36,0,3,1,direct,5,5,28,3,0.941,ramp,
+6,1,4,4,2,0.3,0,3,1,direct,5,5,24,3,0.801,ramp,
+7,2,4,4,2,0.33,0,3,1,direct,5,5,50,11,1.694,ramp,
+8,2,4,4,2,0.33,0,3,1,direct,5,5,50,11,1.694,ramp,
+9,2,4,4,2,0.33,0,4,1,direct,4,5,51,11,1.749,ramp,
+10,2,4,4,2,0.4,0,4,1,direct,4,5,56,13,1.913,spike,SPIKE: first full 3-word warmup pressure; scramble sawtooth peaks
+11,2,4,4,2,0.27,0,4,1,direct,4,5,47,10,1.608,relief,Relief: easier scramble after the spike (breather)
+12,2,4,4,2,0.33,0,4,1,direct,4,5,51,11,1.749,ramp,ANCHOR (=prototype v12); pinned P1-P8
+13,2,4,4,2,0.34,0,4,1,direct,4,5,52,12,1.772,ramp,
+14,2,4,4,2,0.38,0,4,1,direct,4,5,55,13,1.866,ramp,
+15,2,4,4,2,0.39,0,4,1,direct,4,5,55,13,1.89,ramp,
+16,2,4,4,3,0.34,0,4,1,direct,4,5,53,12,1.792,ramp,
+17,2,4,4,3,0.38,0,4,1,direct,4,5,55,13,1.886,ramp,
+18,2,4,4,3,0.4,0,4,1,direct,4,6,57,14,1.933,ramp,
+19,2,4,4,3,0.41,0,4,1,direct,4,6,57,14,1.957,ramp,
+20,2,4,4,3,0.49,0,4,1,homophone,4,6,75,21,2.543,spike,SPIKE: first homophone pun locks in as the block standard
+21,2,4,4,3,0.37,0,4,1,homophone,4,6,66,18,2.261,relief,Relief: easier scramble after the spike (breather)
+22,2,4,4,3,0.41,0,4,1,homophone,4,6,69,19,2.355,ramp,
+23,2,4,4,3,0.45,0,4,1,homophone,4,6,72,20,2.449,ramp,ANCHOR (=prototype v23); pinned P1-P8
+24,2,4,4,3,0.49,0,4,1,homophone,4,6,75,21,2.543,ramp,
+25,2,4,4,3,0.51,0,5,1,homophone,4,6,77,22,2.62,ramp,
+26,2,4,4,3,0.46,0,5,1,homophone,4,6,73,20,2.503,ramp,
+27,2,4,4,4,0.5,0,6,1,homophone,4,6,78,22,2.647,ramp,
+28,2,4,4,4,0.52,0,6,1,homophone,4,6,79,23,2.694,ramp,
+29,2,4,4,4,0.53,0,7,2,homophone,4,6,81,23,2.747,ramp,
+30,2,4,4,4,0.62,0,7,2,homophone,4,6,87,26,2.959,spike,SPIKE: approach to first 2-word answer; traps loom
+31,2,4,5,4,0.5,1,7,2,homophone,3,6,91,28,3.103,relief,Relief: easier scramble after the spike (breather)
+32,2,4,5,4,0.54,1,8,2,homophone,3,6,95,29,3.227,ramp,
+33,2,4,5,4,0.59,1,8,2,homophone,3,6,98,31,3.345,ramp,
+34,2,4,5,4,0.6,1,9,2,homophone,3,7,100,31,3.398,spike,ANCHOR (=prototype v34); pinned P1-P8
+35,2,4,5,4,0.61,1,9,2,homophone,3,7,100,31,3.422,ramp,
+36,2,4,5,4,0.52,1,8,2,homophone,3,7,93,29,3.18,ramp,
+37,2,4,5,4,0.53,1,8,2,homophone,3,7,94,29,3.204,ramp,
+38,2,4,5,4,0.5,1,8,2,homophone,3,7,92,28,3.133,ramp,
+39,2,4,5,4,0.48,1,8,2,homophone,3,7,91,27,3.086,ramp,
+40,3,4,4,3,0.52,0,7,2,homophone,4,7,103,33,3.526,spike,SPIKE: 2-word homophone answers now routine; P6 pushes to 9-10
+41,3,4,4,3,0.37,0,7,2,homophone,4,7,93,28,3.174,relief,Relief: easier scramble after the spike (breather)
+42,3,4,4,3,0.37,0,7,2,idiom,4,7,87,26,2.975,ramp,
+43,3,4,4,3,0.38,0,7,2,idiom,4,7,88,26,2.999,ramp,
+44,3,4,4,3,0.38,0,6,2,idiom,4,7,87,26,2.968,ramp,
+45,3,4,4,3,0.33,0,6,2,idiom,4,7,84,25,2.851,relief,ANCHOR (=prototype v45); pinned P1-P8
+46,3,4,4,3,0.32,0,6,2,idiom,4,7,83,24,2.828,ramp,
+47,3,4,4,3,0.36,0,7,2,idiom,4,7,87,26,2.952,ramp,
+48,3,4,4,3,0.38,0,7,2,idiom,4,7,88,26,2.999,ramp,
+49,3,4,5,4,0.4,0,8,2,idiom,4,7,97,30,3.321,ramp,
+50,3,4,5,4,0.49,0,9,2,idiom,4,7,104,33,3.562,spike,SPIKE: idiom puns enter rotation; longer words (P2=6)
+51,3,4,5,4,0.37,0,9,2,idiom,4,8,96,30,3.281,relief,Relief: easier scramble after the spike (breather)
+52,3,4,5,4,0.42,0,10,2,idiom,4,8,101,32,3.428,ramp,
+53,3,4,5,4,0.47,1,10,2,homophone,3,8,116,38,3.946,ramp,
+54,3,4,5,4,0.52,1,11,2,homophone,3,8,120,40,4.094,ramp,
+55,3,4,6,4,0.53,1,11,2,homophone,3,8,127,43,4.342,ramp,
+56,3,4,6,4,0.52,1,12,2,homophone,3,8,128,43,4.349,ramp,ANCHOR (=prototype v56); pinned P1-P8
+57,3,4,6,4,0.52,1,11,2,homophone,3,8,127,42,4.319,ramp,
+58,3,4,6,4,0.52,1,11,2,homophone,3,8,127,42,4.319,ramp,
+59,3,4,6,4,0.51,1,11,2,homophone,3,8,126,42,4.295,ramp,
+60,3,4,5,5,0.58,1,10,2,homophone,3,8,124,41,4.224,spike,SPIKE: sustained trap anagrams; homophones at 12-letter answers
+61,3,4,5,5,0.45,1,10,2,homophone,3,8,115,37,3.919,relief,Relief: easier scramble after the spike (breather)
+62,4,4,5,5,0.48,1,10,2,homophone,3,8,141,48,4.812,ramp,
+63,4,4,5,5,0.51,1,9,2,homophone,3,8,142,49,4.852,ramp,
+64,4,4,5,5,0.54,1,9,2,double-layer,2,8,151,52,5.153,ramp,
+65,4,4,5,5,0.53,1,9,2,double-layer,2,8,150,52,5.129,ramp,
+66,4,4,5,5,0.47,1,8,2,double-layer,2,8,145,50,4.958,ramp,
+67,4,4,5,5,0.5,1,8,2,double-layer,2,8,147,51,5.029,spike,ANCHOR (=prototype v67); pinned P1-P8
+68,4,4,5,5,0.49,1,8,2,double-layer,2,8,147,50,5.005,ramp,
+69,4,4,5,5,0.48,1,8,2,double-layer,2,8,146,50,4.982,ramp,
+70,4,4,5,5,0.54,1,8,2,double-layer,2,9,150,52,5.122,spike,SPIKE: double-layer puns become the block standard; P8 drops to 2
+71,4,4,5,5,0.4,1,8,2,double-layer,2,9,141,48,4.794,relief,Relief: easier scramble after the spike (breather)
+72,4,4,5,5,0.42,1,8,2,double-layer,2,9,142,48,4.841,ramp,
+73,4,4,5,4,0.45,1,8,2,double-layer,3,9,143,49,4.866,ramp,
+74,4,4,5,4,0.47,1,8,2,double-layer,3,9,144,49,4.913,ramp,
+75,4,4,5,4,0.46,1,8,2,double-layer,3,9,143,49,4.89,ramp,
+76,4,4,5,4,0.39,1,8,2,double-layer,3,9,139,47,4.725,ramp,
+77,4,4,5,4,0.41,1,8,2,double-layer,3,9,140,48,4.772,ramp,
+78,4,4,5,4,0.4,1,8,2,double-layer,3,9,139,47,4.749,relief,ANCHOR (=prototype v78); pinned P1-P8
+79,4,4,5,4,0.42,1,8,2,double-layer,3,9,141,48,4.796,ramp,
+80,4,4,5,4,0.51,1,8,2,double-layer,3,9,147,50,5.007,spike,SPIKE: 4-word levels harden; rarer lexicon (P3=5)
+81,4,4,5,4,0.39,1,8,2,double-layer,3,9,139,47,4.725,relief,Relief: easier scramble after the spike (breather)
+82,4,4,5,5,0.44,1,9,2,double-layer,3,9,143,49,4.893,ramp,
+83,4,4,5,5,0.49,1,9,2,double-layer,3,9,147,51,5.01,ramp,
+84,4,4,5,5,0.54,1,9,2,double-layer,3,9,150,52,5.128,ramp,
+85,4,4,5,5,0.56,1,9,2,double-layer,3,9,152,52,5.175,ramp,
+86,4,4,6,5,0.52,1,9,2,double-layer,2,9,156,54,5.331,ramp,
+87,4,4,6,5,0.56,1,9,2,double-layer,2,9,159,55,5.425,ramp,
+88,4,4,6,5,0.58,1,10,2,double-layer,2,9,161,56,5.502,ramp,
+89,4,4,6,5,0.6,1,10,2,double-layer,2,9,163,57,5.549,ramp,ANCHOR (=prototype v89); pinned P1-P8
+90,4,4,6,5,0.68,1,10,2,double-layer,2,10,168,59,5.737,spike,SPIKE: near-max scramble + double-layer; exam approaches
+91,4,4,6,5,0.56,1,10,2,double-layer,2,10,160,56,5.455,relief,Relief: easier scramble after the spike (breather)
+92,4,4,6,5,0.6,1,10,2,double-layer,2,10,163,57,5.549,ramp,
+93,4,4,6,6,0.64,1,10,2,double-layer,2,10,166,58,5.663,ramp,
+94,4,4,6,6,0.68,1,10,2,double-layer,2,10,169,59,5.757,ramp,
+95,5,4,6,6,0.68,1,10,2,double-layer,2,10,193,69,6.579,ramp,
+96,5,4,6,6,0.63,1,10,2,double-layer,2,10,189,68,6.462,ramp,
+97,5,4,6,6,0.67,1,10,2,double-layer,1,10,193,69,6.581,ramp,
+98,5,4,6,6,0.68,1,10,2,double-layer,1,10,194,70,6.604,ramp,
+99,5,4,6,6,0.69,1,10,2,double-layer,1,10,194,70,6.628,ramp,
+100,5,4,6,6,0.7,1,10,2,double-layer,1,10,195,70,6.651,milestone,"TOP-SPIKE (exam): 5 words, rarest lexicon, most opaque cartoon (P8=1)"

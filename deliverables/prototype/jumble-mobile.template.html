@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Word Tangle — прототип (Jumble mobile)</title>
+<style>
+  :root{
+    --bg:#f4ede0; --card:#fffdf8; --ink:#3a3226; --muted:#8a7d68;
+    --tile:#fff3d6; --tile-b:#e8c982; --tile-ink:#5a4a2a;
+    --accent:#e8894a; --accent-d:#c96f34; --good:#5aa469; --circle:#e8894a;
+    --slot:#efe6d2; --slot-b:#d8cbb0; --shadow:0 3px 0 rgba(0,0,0,.14);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0;height:100%;background:#2c2622;font-family:'Segoe UI',system-ui,-apple-system,sans-serif}
+  /* phone frame on desktop; full-bleed on real mobile */
+  #frame{
+    position:relative;width:390px;height:844px;margin:0 auto;background:var(--bg);
+    overflow:hidden;box-shadow:0 0 0 10px #14110f,0 20px 60px rgba(0,0,0,.6);
+  }
+  @media (max-width:430px){ #frame{width:100vw;height:100vh;box-shadow:none} }
+  .screen{position:absolute;inset:0;display:none;flex-direction:column;padding:14px}
+  .screen.active{display:flex}
+  .row{display:flex;align-items:center;gap:8px}
+  .spacer{flex:1}
+  .pill{background:var(--card);border:2px solid var(--tile-b);border-radius:999px;padding:5px 12px;font-weight:700;color:var(--ink);font-size:14px}
+  .iconbtn{background:var(--card);border:2px solid var(--tile-b);border-radius:12px;width:40px;height:40px;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink)}
+  .btn{background:var(--accent);color:#fff;border:none;border-radius:16px;padding:16px;font-size:18px;font-weight:800;cursor:pointer;box-shadow:0 4px 0 var(--accent-d);letter-spacing:.3px}
+  .btn:active{transform:translateY(2px);box-shadow:0 2px 0 var(--accent-d)}
+  .btn.ghost{background:var(--card);color:var(--ink);box-shadow:0 4px 0 #d8cbb0;border:2px solid var(--tile-b)}
+
+  /* HOME */
+  #home{align-items:center;justify-content:center;text-align:center;gap:14px}
+  .logo{font-size:46px;font-weight:900;color:var(--accent);letter-spacing:2px;text-shadow:2px 2px 0 #fff,4px 4px 0 rgba(0,0,0,.12);transform:rotate(-3deg)}
+  .logo small{display:block;font-size:14px;color:var(--muted);letter-spacing:1px;transform:rotate(0);margin-top:4px}
+  .home-art{font-size:96px;margin:6px}
+  #home .btn{width:210px}
+  .home-foot{position:absolute;bottom:18px;left:0;right:0;justify-content:center}
+
+  /* LEVEL MAP — winding road */
+  #map .maparea{flex:1;overflow-y:auto;overflow-x:hidden;padding:0}
+  .trail{position:relative;margin:0 auto;
+    background:linear-gradient(180deg,#f8eeda 0%,#f1e2c8 50%,#ecdcbc 100%)}
+  .trail::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+    background-image:radial-gradient(rgba(176,144,92,.13) 1.4px, transparent 1.6px);
+    background-size:24px 24px}
+  .trailghost{position:absolute;z-index:0;font-weight:900;color:rgba(150,120,78,.09);
+    pointer-events:none;user-select:none;transform:translate(-50%,-50%)}
+  .road{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+  .node{position:absolute;z-index:2;width:62px;height:62px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;
+    border:4px solid #fff;box-shadow:0 5px 12px rgba(90,66,30,.28);transform:translate(-50%,-50%)}
+  .node .vl{position:absolute;bottom:-9px;left:50%;transform:translateX(-50%);background:#fff;
+    border:1px solid var(--tile-b);border-radius:999px;font-size:9px;padding:1px 6px;color:var(--muted);
+    font-weight:700;white-space:nowrap}
+  .node.locked{background:#9c907a;color:#fff;border-color:#eee6d6}
+  .node.locked .lk{font-size:24px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))}
+  .node.open{background:#ffe7ad;color:#8a5a24;border-color:#fff;cursor:pointer}
+  .node.done{background:#57a866;color:#fff;border-color:#fff;cursor:pointer}
+  .node.done .chk{font-size:30px;line-height:1}
+  .node.current{background:var(--accent);color:#fff;cursor:pointer;animation:pulse 1.5s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 5px 12px rgba(90,66,30,.28),0 0 0 0 rgba(232,137,74,.5)}
+    60%{box-shadow:0 5px 12px rgba(90,66,30,.28),0 0 0 12px rgba(232,137,74,0)}}
+  .node .stars{position:absolute;top:-17px;left:50%;transform:translateX(-50%);display:flex;gap:1px;z-index:3}
+  .node .stars i{color:#f4b23c;font-size:14px;font-style:normal;filter:drop-shadow(0 1px 0 #fff)}
+  .node .play{position:absolute;bottom:-15px;left:50%;transform:translateX(-50%);background:#fff;
+    color:var(--accent-d);font-size:9px;font-weight:800;border-radius:999px;padding:2px 8px;
+    border:2px solid var(--accent);white-space:nowrap;z-index:3;letter-spacing:.3px}
+  .maptitle{text-align:center;font-weight:800;color:var(--ink);font-size:15px;margin:6px 0 2px}
+
+  /* GAME */
+  .topbar{gap:8px;margin-bottom:6px}
+  .progress{font-weight:800;color:var(--ink);font-size:14px}
+  .solved-strip{display:flex;flex-wrap:wrap;gap:5px;min-height:0;margin-bottom:6px}
+  .solved-chip{background:var(--good);color:#fff;border-radius:8px;padding:3px 8px;font-weight:800;font-size:13px;letter-spacing:1px}
+  .cartoon{border-radius:16px;overflow:hidden;background:#efe6d2;border:2px solid var(--tile-b);position:relative;width:min(100%,34vh);aspect-ratio:1/1;margin:0 auto;flex:none;display:flex;align-items:center;justify-content:center}
+  .cartoon img{width:100%;height:100%;object-fit:cover;display:block;transition:filter .55s ease}
+  .cartoon .ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted);padding:16px;text-align:center}
+  .cartoon .ph .em{font-size:54px}
+  .speech{position:absolute;top:10px;left:10px;right:10px;background:#fff;border:2px solid var(--tile-b);border-radius:14px;padding:6px 10px;font-weight:700;color:var(--ink);font-size:13px;box-shadow:var(--shadow)}
+  .caption{background:var(--card);border:2px dashed var(--tile-b);border-radius:12px;padding:8px 10px;color:var(--ink);font-size:14px;line-height:1.25;margin:6px 0}
+  .caption b{color:var(--accent-d)}
+
+  .slots{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0}
+  .slotword{display:flex;gap:6px;align-items:center}
+  .slotword .q{font-weight:900;color:var(--accent-d);font-size:26px}
+  .slot,.tile{width:44px;height:52px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800}
+  .slot{background:var(--slot);border:2px solid var(--slot-b);color:var(--tile-ink)}
+  .slot.circ{border-color:var(--circle);box-shadow:0 0 0 2px rgba(232,137,74,.3) inset}
+  .slot.filled{background:var(--tile);border-color:var(--tile-b)}
+  .pool{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:6px 0 8px}
+  .tile{background:var(--tile);border:2px solid var(--tile-b);color:var(--tile-ink);cursor:pointer;box-shadow:0 3px 0 var(--tile-b);position:relative}
+  .tile:active{transform:translateY(2px);box-shadow:0 1px 0 var(--tile-b)}
+  .tile.used{opacity:.28;pointer-events:none;transform:scale(.9)}
+  .tile.circ::after{content:"";position:absolute;inset:5px;border:2px solid var(--circle);border-radius:50%;opacity:.55}
+  .gamebody{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:8px}
+  .controls{display:flex;gap:8px;padding-top:2px}
+  .controls .btn{flex:1;padding:13px;font-size:15px}
+  .hintbar{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-bottom:6px}
+  .hintbtn{background:var(--card);border:2px solid var(--tile-b);border-radius:10px;padding:7px 9px;font-size:12px;font-weight:700;color:var(--ink);cursor:pointer;display:flex;gap:4px;align-items:center}
+  .hintbtn .c{color:var(--muted);font-weight:800}
+  .praise{position:absolute;top:40%;left:0;right:0;text-align:center;font-size:34px;font-weight:900;color:var(--accent);text-shadow:2px 2px 0 #fff;pointer-events:none;opacity:0;transition:opacity .2s}
+  .praise.show{opacity:1;animation:pop .5s}
+  .shake{animation:shake .35s}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+  @keyframes pop{0%{transform:scale(.5)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+  .fly{position:fixed;z-index:60;font-weight:900;color:var(--accent);font-size:22px;pointer-events:none;transition:transform .5s cubic-bezier(.3,.9,.4,1),opacity .5s}
+
+  /* WIN */
+  #win{align-items:center;justify-content:center;text-align:center;gap:12px}
+  #win .cartoon{width:min(72%,240px);height:auto;aspect-ratio:1/1;flex:none}
+  .winans{font-size:26px;font-weight:900;color:var(--accent-d);letter-spacing:1px}
+  .coinpop{font-size:22px;font-weight:900;color:var(--good)}
+
+  /* CHEATS */
+  #cheatToggle{position:absolute;top:6px;left:50%;transform:translateX(-50%);z-index:50;background:#3a3226;color:#ffd27a;border:none;border-radius:0 0 12px 12px;padding:5px 16px;font-size:11px;font-weight:800;cursor:pointer;opacity:.94;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+  #cheatPanel{position:absolute;inset:0;z-index:55;background:rgba(20,17,15,.92);display:none;flex-direction:column;padding:18px;gap:8px;overflow-y:auto}
+  #cheatPanel.open{display:flex}
+  #cheatPanel h3{color:#ffd27a;margin:2px 0 8px;text-align:center}
+  .cheat{background:#2c2622;color:#ffeccb;border:1px solid #5a4a2a;border-radius:10px;padding:12px;font-size:14px;font-weight:700;text-align:left;cursor:pointer}
+  .cheat:active{background:#3a3226}
+  .cheat small{display:block;color:#a98;font-weight:500;margin-top:2px}
+  .cheat-close{background:var(--accent);color:#fff;border:none;border-radius:12px;padding:12px;font-weight:800;cursor:pointer;margin-top:6px}
+  #diffOverlay{position:absolute;left:8px;bottom:8px;z-index:48;background:rgba(20,17,15,.85);color:#8ef;font:11px/1.4 monospace;padding:8px 10px;border-radius:8px;display:none;white-space:pre;max-width:200px}
+  #diffOverlay.show{display:block}
+  .confetti{position:absolute;width:9px;height:14px;top:-20px;z-index:40;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="frame">
+  <button id="cheatToggle" onclick="toggleCheats()">🐞 ЧИТЫ</button>
+
+  <!-- HOME -->
+  <div class="screen active" id="home">
+    <div class="logo">WORD TANGLE<small>по мотивам Jumble · прототип</small></div>
+    <div class="home-art">🧩</div>
+    <button class="btn" onclick="openMap()">ИГРАТЬ ▶</button>
+    <div class="row home-foot">
+      <span class="pill">💰 <span id="homeCoins">250</span></span>
+    </div>
+  </div>
+
+  <!-- MAP -->
+  <div class="screen" id="map">
+    <div class="row"><button class="iconbtn" onclick="show('home')">←</button><div class="spacer"></div><span class="pill">💰 <span id="mapCoins">250</span></span></div>
+    <div class="maptitle">Тропа уровней</div>
+    <div class="maparea" id="maparea"></div>
+  </div>
+
+  <!-- GAME -->
+  <div class="screen" id="game">
+    <div class="row topbar">
+      <button class="iconbtn" onclick="show('map')">←</button>
+      <span class="pill">💰 <span id="gameCoins">250</span></span>
+      <div class="spacer"></div>
+      <span class="progress" id="progress">Слово 1/1</span>
+    </div>
+    <div class="gamebody">
+      <div class="solved-strip" id="solvedStrip"></div>
+      <div class="cartoon teaser" id="cartoon"></div>
+      <div class="caption" id="caption" style="display:none"></div>
+      <div class="slots" id="slots"></div>
+      <div class="pool" id="pool"></div>
+      <div class="hintbar" id="hintbar"></div>
+      <div class="controls">
+        <button class="btn ghost" onclick="doShuffle()">🔀 Перемешать</button>
+      </div>
+    </div>
+    <div class="praise" id="praise"></div>
+  </div>
+
+  <!-- WIN -->
+  <div class="screen" id="win">
+    <div style="font-size:30px;font-weight:900;color:var(--accent)" id="winPraise">БЛЕСТЯЩЕ!</div>
+    <div class="cartoon" id="winCartoon"></div>
+    <div class="winans" id="winAnswer"></div>
+    <div class="coinpop" id="winCoins">+4 💰</div>
+    <button class="btn" onclick="afterWin()" style="width:210px">ДАЛЕЕ ▶</button>
+  </div>
+
+  <!-- CHEATS -->
+  <div id="cheatPanel">
+    <h3>🐞 Читы для тестирования</h3>
+    <button class="cheat" onclick="cheat_unlockAll()">🔓 Открыть все уровни<small>снять все замки на тропе</small></button>
+    <button class="cheat" onclick="cheat_jump()">⤵️ Перейти на уровень…<small>ввести номер 1–10</small></button>
+    <button class="cheat" onclick="cheat_solveWord()">✍️ Решить текущее слово<small>заполнить активное слово</small></button>
+    <button class="cheat" onclick="cheat_solveLevel()">✅ Решить весь уровень<small>слова + ответ → экран победы</small></button>
+    <button class="cheat" onclick="cheat_revealAnswer()">👁️ Показать ответ-сюрприз<small>ответ + объяснение (EN)</small></button>
+    <button class="cheat" onclick="cheat_translate()">🌐 Перевод и объяснение (RU)<small>ответ и суть каламбура по-русски</small></button>
+    <button class="cheat" onclick="cheat_addCoins()">💰 +1000 монет</button>
+    <button class="cheat" onclick="cheat_toggleDiff()">📊 Оверлей сложности P1–P8<small>показать параметры уровня</small></button>
+    <button class="cheat" onclick="cheat_reset()">🗑️ Сбросить прогресс<small>очистить сохранение</small></button>
+    <button class="cheat-close" onclick="toggleCheats()">Закрыть</button>
+  </div>
+  <div id="diffOverlay"></div>
+</div>
+
+<script>
+/* ==== DATA (levels embedded; images injected by build_prototype.py) ==== */
+const LEVELS_DATA = __LEVELS_JSON__;
+const IMAGES = __IMAGES_JSON__;   /* { "1": "data:image/...", ... }  empty => placeholder */
+const LEVELS = LEVELS_DATA.levels;
+const byId = id => LEVELS.find(l => l.id === id);
+
+/* ==== PERSISTENT STATE ==== */
+const SAVE_KEY = 'wordtangle_save_v1';
+function freshSave(){ return { coins:250, completed:[], unlockedMax:1 }; } // factory: never share the array ref
+let save = load();
+function load(){ try{ const s=JSON.parse(localStorage.getItem(SAVE_KEY)); return s? Object.assign(freshSave(), s) : freshSave(); }catch(e){ return freshSave(); } }
+function persist(){ localStorage.setItem(SAVE_KEY, JSON.stringify(save)); syncCoins(); }
+function syncCoins(){ ['homeCoins','mapCoins','gameCoins'].forEach(id=>{const e=document.getElementById(id); if(e) e.textContent=save.coins;}); }
+
+/* ==== RUNTIME GAME STATE ==== */
+let G = null; // current level runtime
+
+const HINT_PRICES = { reveal:25, position:50, explain:40, solveword:120 };
+const PRAISES = ['ОТЛИЧНО!','БЛЕСТЯЩЕ!','ВЕЛИКОЛЕПНО!'];
+
+/* ==== NAV ==== */
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+function openMap(){ show('map'); renderMap(); }
+
+/* ==== MAP — winding road, milestone markers ==== */
+const svgNS = 'http://www.w3.org/2000/svg';
+function svgEl(name, attrs){ const e=document.createElementNS(svgNS,name); for(const k in attrs) e.setAttribute(k,attrs[k]); return e; }
+
+function renderMap(){
+  const area = document.getElementById('maparea'); area.innerHTML='';
+  const n = LEVELS.length;
+  const W = Math.min((area.clientWidth || 360), 380) - 4;
+  const STEP = 96, MARGIN = 64, NODE = 31;   // NODE = half node size
+  const A = W * 0.29, cx0 = W / 2;
+  const totalH = MARGIN * 2 + (n - 1) * STEP;
+
+  const trail = document.createElement('div');
+  trail.className = 'trail';
+  trail.style.width = W + 'px';
+  trail.style.height = totalH + 'px';
+
+  // node centers: level 1 (bottom) climbs up to level 10 (top)
+  const pos = LEVELS.map((l, i) => ({
+    x: cx0 + A * Math.sin(i * 0.9 + 0.5),
+    y: totalH - MARGIN - i * STEP,
+  }));
+
+  // decorative ghost letters (on-theme, faint, behind everything)
+  const ghosts = [['J',60,'12%','16%',-14],['U',48,'86%','30%',10],['M',66,'20%','52%',8],
+                  ['B',50,'82%','66%',-12],['L',58,'16%','84%',12],['E',46,'80%','92%',-8]];
+  ghosts.forEach(([ch,sz,l,t,rot])=>{
+    const g=document.createElement('div'); g.className='trailghost'; g.textContent=ch;
+    g.style.cssText+=`font-size:${sz}px;left:${l};top:${t};transform:translate(-50%,-50%) rotate(${rot}deg)`;
+    trail.appendChild(g);
+  });
+
+  // the road: smooth thick ribbon through all nodes + dashed centerline + up-chevrons
+  const svg = svgEl('svg',{viewBox:`0 0 ${W} ${totalH}`,class:'road'});
+  let d = `M ${pos[0].x} ${pos[0].y}`;
+  for (let i=1;i<n;i++){
+    const xc=(pos[i-1].x+pos[i].x)/2, yc=(pos[i-1].y+pos[i].y)/2;
+    d += ` Q ${pos[i-1].x} ${pos[i-1].y} ${xc} ${yc}`;
+  }
+  d += ` L ${pos[n-1].x} ${pos[n-1].y}`;
+  svg.appendChild(svgEl('path',{d,fill:'none',stroke:'#d8c092',"stroke-width":24,"stroke-linecap":'round',"stroke-linejoin":'round'}));       // road shadow/edge
+  svg.appendChild(svgEl('path',{d,fill:'none',stroke:'#eddcb4',"stroke-width":18,"stroke-linecap":'round',"stroke-linejoin":'round'}));       // road surface
+  svg.appendChild(svgEl('path',{d,fill:'none',stroke:'#fbf4e2',"stroke-width":3,"stroke-dasharray":'1 15',"stroke-linecap":'round',opacity:.9})); // centerline
+  // chevrons pointing up-road between nodes
+  for (let i=0;i<n-1;i++){
+    const a=pos[i], b=pos[i+1];
+    const mx=(a.x+b.x)/2, my=(a.y+b.y)/2;
+    const ang=Math.atan2(b.y-a.y,b.x-a.x)*180/Math.PI + 90;
+    svg.appendChild(svgEl('path',{d:'M -6 5 L 0 -5 L 6 5',fill:'none',stroke:'#b98f52',
+      "stroke-width":3,"stroke-linecap":'round',"stroke-linejoin":'round',opacity:.85,
+      transform:`translate(${mx} ${my}) rotate(${ang})`}));
+  }
+  trail.appendChild(svg);
+
+  // nodes
+  let currentEl = null;
+  LEVELS.forEach((l, i) => {
+    const done = save.completed.includes(l.id);
+    const open = l.id <= save.unlockedMax;
+    const isCurrent = l.id === save.unlockedMax && !done;
+    const node = document.createElement('div');
+    node.className = 'node ' + (done ? 'done' : (isCurrent ? 'current' : (open ? 'open' : 'locked')));
+    node.style.left = pos[i].x + 'px';
+    node.style.top = pos[i].y + 'px';
+    let inner = '';
+    if (done) inner = '<div class="stars"><i>★</i><i>★</i><i>★</i></div><span class="chk">✓</span>';
+    else if (open) inner = String(l.id);
+    else inner = '<span class="lk">🔒</span>';
+    inner += `<span class="vl">ур.${l.virtualLevel}</span>`;
+    if (isCurrent) inner += '<span class="play">▶ ИГРАТЬ</span>';
+    node.innerHTML = inner;
+    if (open || done) node.onclick = () => startLevel(l.id);
+    if (isCurrent || (l.id === save.unlockedMax)) currentEl = node;
+    trail.appendChild(node);
+  });
+
+  area.appendChild(trail);
+  syncCoins();
+  if (currentEl) currentEl.scrollIntoView({ block: 'center' });
+  else area.scrollTop = area.scrollHeight;
+}
+
+/* ==== START / RENDER LEVEL ==== */
+function startLevel(id){
+  const L = byId(id);
+  G = {
+    id, L, phase:'words', wordIndex:0,
+    slots:[],           // current word slots: {ch, fromPool} or null
+    pool:[],            // {ch, used, circ, id}
+    buffer:[],          // collected circled letters {ch}
+    solvedWords:[],     // strings
+    ansSlots:[], ansPool:[], revealed:false
+  };
+  document.getElementById('caption').style.display='none';
+  document.getElementById('cartoon').className='cartoon teaser';
+  setupWord();
+  renderCartoon(document.getElementById('cartoon'), L, true);
+  updateDiffOverlay();
+  show('game');
+  syncCoins();
+}
+
+function setupWord(){
+  const w = G.L.words[G.wordIndex];
+  if(!w) return; // guard against out-of-range advance
+  G.slots = new Array(w.answer.length).fill(null);
+  G.pool = shuffle(w.scramble.split('').map((ch,i)=>({ch, used:false, id:i, circ:w.circles.includes(indexInAnswer(w,ch,i))})));
+  // circ marker for pool tiles is cosmetic (which slots are circled shown on slots)
+  renderProgress(); renderSolved(); renderSlots(); renderPool(); renderHints();
+}
+// map is not position-perfect for duplicate letters; circle highlight on slots uses answer indices directly
+function indexInAnswer(w,ch,poolIdx){ return -1; }
+
+function renderProgress(){
+  const p = document.getElementById('progress');
+  if(G.phase==='words') p.textContent = `Слово ${G.wordIndex+1}/${G.L.words.length}`;
+  else p.textContent = 'ФИНАЛ';
+}
+function renderSolved(){
+  const s = document.getElementById('solvedStrip'); s.innerHTML='';
+  G.solvedWords.forEach(w=>{ const c=document.createElement('span'); c.className='solved-chip'; c.textContent='✓ '+w; s.appendChild(c); });
+}
+
+function renderSlots(){
+  const box = document.getElementById('slots'); box.innerHTML='';
+  if(G.phase==='words'){
+    const w = G.L.words[G.wordIndex];
+    const wrap=document.createElement('div'); wrap.className='slotword';
+    G.slots.forEach((s,i)=>{
+      const d=document.createElement('div');
+      d.className='slot'+(w.circles.includes(i)?' circ':'')+(s?' filled':'');
+      d.textContent = s? s.ch : '';
+      d.onclick=()=>returnFromSlot(i);
+      wrap.appendChild(d);
+    });
+    box.appendChild(wrap);
+  } else {
+    // answer phase: grouped by word with quotes
+    let idx=0;
+    G.L.surprise.answer.forEach(word=>{
+      const wrap=document.createElement('div'); wrap.className='slotword';
+      const quoted = (G.L.surprise.quoted||[]).includes(word);
+      if(quoted){ const q=document.createElement('span'); q.className='q'; q.textContent='“'; wrap.appendChild(q); }
+      for(let k=0;k<word.length;k++){
+        const myIdx=idx;
+        const s=G.ansSlots[myIdx];
+        const d=document.createElement('div');
+        d.className='slot'+(s?' filled':'');
+        d.textContent = s? s.ch : '';
+        d.onclick=()=>returnFromAnsSlot(myIdx);
+        wrap.appendChild(d); idx++;
+      }
+      if(quoted){ const q=document.createElement('span'); q.className='q'; q.textContent='”'; wrap.appendChild(q); }
+      box.appendChild(wrap);
+    });
+  }
+}
+function renderPool(){
+  const box=document.getElementById('pool'); box.innerHTML='';
+  const pool = G.phase==='words'? G.pool : G.ansPool;
+  pool.forEach((t,i)=>{
+    const d=document.createElement('div');
+    d.className='tile'+(t.used?' used':'')+(t.circ?' circ':'');
+    d.textContent=t.ch;
+    d.onclick=(e)=>placeTile(i,e.currentTarget);
+    box.appendChild(d);
+  });
+}
+function renderHints(){
+  const bar=document.getElementById('hintbar'); bar.innerHTML='';
+  const hints=[['💡 Открыть букву','reveal',hint_reveal],['🎯 Буква на позиции','position',hint_position],['✨ Решить слово','solveword',hint_solveword]];
+  if(G.phase==='answer') hints.splice(2,0,['❓ Объяснить шутку','explain',hint_explain]);
+  hints.forEach(([label,key,fn])=>{
+    const b=document.createElement('button'); b.className='hintbtn';
+    b.innerHTML=`${label} <span class="c">${HINT_PRICES[key]}💰</span>`;
+    b.onclick=fn; bar.appendChild(b);
+  });
+}
+
+/* ==== CARTOON ==== */
+// Teaser blur shrinks word-by-word: full at start, clear once every word is solved.
+function teaserBlurPx(){
+  if(!G || G.phase!=='words') return 0;
+  const total=G.L.words.length, solved=G.solvedWords.length;
+  return Math.max(0, Math.round(16 * (1 - solved/total)));
+}
+function applyTeaserBlur(){
+  const img=document.querySelector('#cartoon img'); if(!img) return;
+  img.style.filter = `blur(${teaserBlurPx()}px) saturate(.85)`;
+}
+function renderCartoon(el, L, teaser){
+  const img = IMAGES[String(L.id)];
+  el.className='cartoon'+(teaser?' teaser':'');
+  if(img){
+    el.innerHTML = `<img src="${img}" alt="cartoon">`;
+    if(teaser) el.querySelector('img').style.filter = `blur(${teaserBlurPx()}px) saturate(.85)`;
+  } else {
+    el.innerHTML = `<div class="ph"><div class="em">🎨</div><div>картинка уровня ${L.id}<br><small>(арт подставится build-скриптом)</small></div></div>`;
+  }
+  // speech bubble from prompt is baked into image; we also show caption in answer phase
+}
+
+/* ==== INPUT: tap-to-place ==== */
+function placeTile(i, node){
+  const pool = G.phase==='words'? G.pool : G.ansPool;
+  const t=pool[i]; if(t.used) return;
+  const slots = G.phase==='words'? G.slots : G.ansSlots;
+  const free = slots.findIndex(s=>s===null);
+  if(free<0) return;
+  t.used=true; slots[free]={ch:t.ch, poolIdx:i};
+  if(node) node.animate([{transform:'scale(1.2)'},{transform:'scale(1)'}],{duration:150});
+  renderSlots(); renderPool();
+  checkComplete();
+}
+function returnFromSlot(i){
+  const s=G.slots[i]; if(!s) return;
+  G.pool[s.poolIdx].used=false; G.slots[i]=null;
+  renderSlots(); renderPool();
+}
+function returnFromAnsSlot(i){
+  const s=G.ansSlots[i]; if(!s) return;
+  G.ansPool[s.poolIdx].used=false; G.ansSlots[i]=null;
+  renderSlots(); renderPool();
+}
+
+/* ==== COMPLETION CHECK ==== */
+function checkComplete(){
+  const slots = G.phase==='words'? G.slots : G.ansSlots;
+  if(slots.some(s=>s===null)) return;
+  const guess = slots.map(s=>s.ch).join('');
+  const target = G.phase==='words'
+      ? G.L.words[G.wordIndex].answer
+      : G.L.surprise.answer.join('');
+  if(guess===target){ G.phase==='words'? onWordSolved() : onAnswerSolved(); }
+  else { shakeSlots(); }
+}
+function shakeSlots(){ const b=document.getElementById('slots'); b.classList.add('shake'); setTimeout(()=>b.classList.remove('shake'),350); }
+
+function onWordSolved(){
+  const w=G.L.words[G.wordIndex];
+  praise();
+  // collect circled letters into buffer with fly animation
+  w.circles.forEach(ci=>{ flyLetter(w.answer[ci]); G.buffer.push({ch:w.answer[ci]}); });
+  G.solvedWords.push(w.answer);
+  applyTeaserBlur(); // progressively unblur the cartoon as words are solved
+  const done=G.wordIndex+1, total=G.L.words.length;
+  setTimeout(()=>{
+    if(done<total){ G.wordIndex++; setupWord(); }
+    else { enterAnswerPhase(); }
+  }, 550);
+}
+
+function enterAnswerPhase(){
+  G.phase='answer';
+  const total = G.L.surprise.answer.join('').length;
+  G.ansSlots = new Array(total).fill(null);
+  G.ansPool = shuffle(G.buffer.map((b,i)=>({ch:b.ch, used:false, id:i, circ:true})));
+  // reveal cartoon fully + show caption
+  renderCartoon(document.getElementById('cartoon'), G.L, false);
+  const cap=document.getElementById('caption'); cap.style.display='block';
+  cap.innerHTML = G.L.surprise.caption.replace(/…|\.\.\./,' <b>…</b>');
+  document.getElementById('solvedStrip').innerHTML='';
+  renderProgress(); renderSlots(); renderPool(); renderHints();
+}
+
+function onAnswerSolved(){
+  praise(2);
+  if(!save.completed.includes(G.id)) save.completed.push(G.id);
+  if(G.id+1 <= LEVELS.length) save.unlockedMax = Math.max(save.unlockedMax, G.id+1);
+  const reward = 2 + Math.round(G.L.difficulty.score/2);
+  save.coins += reward; persist();
+  setTimeout(()=>showWin(reward), 500);
+}
+
+function showWin(reward){
+  document.getElementById('winPraise').textContent = PRAISES[Math.min(2, Math.floor(G.L.difficulty.score/2))];
+  renderCartoon(document.getElementById('winCartoon'), G.L, false);
+  document.getElementById('winAnswer').textContent = '“'+G.L.surprise.answer.join(' ')+'”';
+  document.getElementById('winCoins').textContent = '+'+reward+' 💰';
+  confetti(); show('win');
+}
+function afterWin(){ openMap(); }
+
+/* ==== SHUFFLE ==== */
+function doShuffle(){
+  if(G.phase==='words') G.pool=shuffle(G.pool); else G.ansPool=shuffle(G.ansPool);
+  renderPool();
+}
+
+/* ==== HINTS ==== */
+function pay(key){ if(save.coins < HINT_PRICES[key]){ alert('Недостаточно монет. Подсказки в прототипе можно взять читом «+1000 монет».'); return false; } save.coins-=HINT_PRICES[key]; persist(); return true; }
+function curSlots(){ return G.phase==='words'? G.slots : G.ansSlots; }
+function curPool(){ return G.phase==='words'? G.ansPool : G.ansPool; }
+function targetStr(){ return G.phase==='words'? G.L.words[G.wordIndex].answer : G.L.surprise.answer.join(''); }
+function poolRef(){ return G.phase==='words'? G.pool : G.ansPool; }
+
+function fillSlot(pos){
+  const target=targetStr(); const ch=target[pos];
+  const pool=poolRef();
+  const pi=pool.findIndex(t=>!t.used && t.ch===ch);
+  if(pi<0) return false;
+  pool[pi].used=true; curSlots()[pos]={ch, poolIdx:pi};
+  return true;
+}
+function hint_reveal(){ if(!pay('reveal'))return; const empties=curSlots().map((s,i)=>s?null:i).filter(i=>i!==null); if(!empties.length)return; const pos=empties[Math.floor(Math.random()*empties.length)]; fillSlot(pos); renderSlots(); renderPool(); checkComplete(); }
+function hint_position(){ if(!pay('position'))return; alert('Тапни пустой слот — туда встанет верная буква.'); armPosition=true; }
+let armPosition=false;
+function hint_explain(){ if(!pay('explain'))return; alert('💡 '+G.L.surprise.explanation); }
+function hint_solveword(){ if(!pay('solveword'))return; curSlots().forEach((s,i)=>{ if(!s) fillSlot(i); }); renderSlots(); renderPool(); checkComplete(); }
+
+/* position hint via slot click */
+document.addEventListener('click',e=>{
+  if(!armPosition) return;
+  const slot=e.target.closest('.slot');
+  if(slot && document.getElementById('game').classList.contains('active')){
+    const idx=[...slot.parentElement.parentElement.querySelectorAll('.slot')].indexOf(slot);
+    // compute absolute pos
+    const all=[...document.querySelectorAll('#slots .slot')];
+    const pos=all.indexOf(slot);
+    if(pos>=0 && !curSlots()[pos]){ fillSlot(pos); armPosition=false; renderSlots(); renderPool(); checkComplete(); }
+  }
+},true);
+
+/* ==== JUICE ==== */
+function praise(idx){ const p=document.getElementById('praise'); p.textContent=PRAISES[idx||0]; p.classList.add('show'); setTimeout(()=>p.classList.remove('show'),600); }
+function flyLetter(ch){
+  const el=document.createElement('div'); el.className='fly'; el.textContent=ch;
+  const f=document.getElementById('frame').getBoundingClientRect();
+  el.style.left=(f.left+f.width/2)+'px'; el.style.top=(f.top+f.height*0.55)+'px';
+  document.body.appendChild(el);
+  requestAnimationFrame(()=>{ el.style.transform=`translate(${(Math.random()*80-40)}px,-${f.height*0.35}px)`; el.style.opacity='0'; });
+  setTimeout(()=>el.remove(),550);
+}
+function confetti(){
+  const frame=document.getElementById('frame');
+  const colors=['#e8894a','#5aa469','#e8c982','#c96f34','#7aa9d8'];
+  for(let i=0;i<70;i++){
+    const c=document.createElement('div'); c.className='confetti';
+    c.style.left=Math.random()*100+'%'; c.style.background=colors[i%colors.length];
+    c.style.transform=`rotate(${Math.random()*360}deg)`;
+    frame.appendChild(c);
+    c.animate([{top:'-20px',opacity:1},{top:'110%',opacity:.8}],{duration:1400+Math.random()*900,easing:'ease-in'});
+    setTimeout(()=>c.remove(),2300);
+  }
+}
+
+/* ==== CHEATS ==== */
+function toggleCheats(){ document.getElementById('cheatPanel').classList.toggle('open'); }
+function cheat_unlockAll(){ save.unlockedMax=LEVELS.length; persist(); renderMap(); toast('Все уровни открыты'); }
+function cheat_jump(){ const n=parseInt(prompt('Уровень 1–'+LEVELS.length+':','1')); if(n>=1&&n<=LEVELS.length){ save.unlockedMax=Math.max(save.unlockedMax,n); persist(); toggleCheats(); startLevel(n);} }
+function cheat_solveWord(){ if(!G){toast('Сначала войди в уровень');return;} if(G.phase==='words'){ curSlots().forEach((s,i)=>{ if(!s) fillSlot(i); }); } else { curSlots().forEach((s,i)=>{ if(!s) fillSlot(i); }); } renderSlots(); renderPool(); toggleCheatsIfOpen(); checkComplete(); }
+function cheat_solveLevel(){
+  if(!G){toast('Сначала войди в уровень');return;}
+  toggleCheatsIfOpen();
+  // solve remaining words SYNCHRONOUSLY (no animation timers => no race on wordIndex)
+  while(G.phase==='words'){
+    const w=G.L.words[G.wordIndex];
+    w.circles.forEach(ci=>G.buffer.push({ch:w.answer[ci]}));
+    G.solvedWords.push(w.answer);
+    if(G.wordIndex+1 < G.L.words.length){ G.wordIndex++; setupWord(); }
+    else { enterAnswerPhase(); }   // flips phase to 'answer' and exits loop
+  }
+  // fill and submit the surprise answer
+  G.ansSlots = G.L.surprise.answer.join('').split('').map(ch=>({ch,poolIdx:0}));
+  onAnswerSolved();
+}
+function cheat_revealAnswer(){ if(!G){toast('Сначала войди в уровень');return;} alert('Ответ-сюрприз: “'+G.L.surprise.answer.join(' ')+'”\n\n'+G.L.surprise.explanation); }
+function cheat_translate(){
+  if(!G){toast('Сначала войди в уровень');return;}
+  const s=G.L.surprise;
+  const ru=s.explanation_ru || '(русское объяснение не задано)';
+  const words=G.L.words.map(w=>w.answer).join(', ');
+  alert('Ответ: “'+s.answer.join(' ')+'”\n\nСлова уровня: '+words+'\n\nПо-русски:\n'+ru);
+}
+function cheat_addCoins(){ save.coins+=1000; persist(); toast('+1000 монет'); }
+function cheat_reset(){ if(confirm('Сбросить весь прогресс?')){ save=freshSave(); persist(); renderMap(); show('home'); toggleCheats(); } }
+function cheat_toggleDiff(){ document.getElementById('diffOverlay').classList.toggle('show'); updateDiffOverlay(); }
+function toggleCheatsIfOpen(){ const p=document.getElementById('cheatPanel'); if(p.classList.contains('open')) p.classList.remove('open'); }
+function updateDiffOverlay(){
+  const o=document.getElementById('diffOverlay'); if(!G){o.textContent='';return;}
+  const d=G.L.difficulty;
+  o.textContent = `LVL ${G.id} (virt ${G.L.virtualLevel})\nscore ${d.score}\nP1 words   ${d.P1}\nP2 len     ${d.P2}\nP3 zipf    ${d.P3}\nP4 scr     ${d.P4}\nP5 traps   ${d.P5}\nP6 ansLen  ${d.P6}\nP7 pun     ${d.P7}\nP8 clarity ${d.P8}`;
+}
+function toast(msg){ const t=document.createElement('div'); t.textContent=msg; t.style.cssText='position:absolute;bottom:70px;left:50%;transform:translateX(-50%);background:#3a3226;color:#ffd27a;padding:8px 14px;border-radius:10px;z-index:70;font-weight:700;font-size:13px'; document.getElementById('frame').appendChild(t); setTimeout(()=>t.remove(),1400); }
+
+/* ==== UTIL ==== */
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+/* ==== INIT ==== */
+syncCoins();
+</script>
+</body>
+</html>

@@ -1,0 +1,581 @@
+{
+  "schema": "jumble-level.v1",
+  "levels": [
+    {
+      "id": 1,
+      "virtualLevel": 1,
+      "words": [
+        {
+          "answer": "NAPS",
+          "scramble": "PSAN",
+          "circles": [
+            0,
+            1,
+            2
+          ]
+        }
+      ],
+      "surprise": {
+        "caption": "What the sleepy puppy loves most after lunch is a…",
+        "answer": [
+          "NAP"
+        ],
+        "quoted": [],
+        "explanation": "The puppy is curled up asleep — he is taking a NAP. Drag the three circled letters into the answer bar.",
+        "explanation_ru": "«NAP» — короткий дневной сон, «вздремнуть». Щенок свернулся калачиком после обеда — он прилёг вздремнуть."
+      },
+      "cartoon": {
+        "file": "level-01.png",
+        "prompt": "Cheerful flat-color cartoon illustration for a casual mobile puzzle game, single panel gag comic, bold clean outlines, soft warm palette, simple background. A tiny happy puppy curled up asleep in a sunny dog bed, big Z's floating above, one eye peeking. Speech bubble: \"Zzz…\". no title, no logo, no header text, no watermark"
+      },
+      "difficulty": {
+        "score": 1.0,
+        "P1": 1,
+        "P2": 4,
+        "P3": 1,
+        "P4": 0.33,
+        "P5": 0,
+        "P6": 3,
+        "P7": "direct",
+        "P8": 5
+      }
+    },
+    {
+      "id": 2,
+      "virtualLevel": 12,
+      "words": [
+        {
+          "answer": "PANE",
+          "scramble": "NEPA",
+          "circles": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "answer": "TREE",
+          "scramble": "ETRE",
+          "circles": [
+            2
+          ]
+        }
+      ],
+      "surprise": {
+        "caption": "The glazier fixed the broken window and now the house has a brand new…",
+        "answer": [
+          "PANE"
+        ],
+        "quoted": [],
+        "explanation": "A sheet of window glass is a PANE. The cartoon shows a fresh pane of glass in the frame.",
+        "explanation_ru": "«PANE» — оконное стекло (window pane). Стекольщик заменил разбитое окно — в доме новое стекло."
+      },
+      "cartoon": {
+        "file": "level-02.png",
+        "prompt": "Cheerful flat-color cartoon illustration for a casual mobile puzzle game, single panel gag comic, bold clean outlines, soft warm palette, simple background. A friendly workman installing a sparkling clean square of window glass into a house frame, thumbs up. Speech bubble: \"Good as new!\". no title, no logo, no header text, no watermark"
+      },
+      "difficulty": {
+        "score": 1.6,
+        "P1": 2,
+        "P2": 4,
+        "P3": 2,
+        "P4": 0.33,
+        "P5": 0,
+        "P6": 4,
+        "P7": "direct",
+        "P8": 4
+      }
+    },
+    {
+      "id": 3,
+      "virtualLevel": 23,
+      "words": [
+        {
+          "answer": "MEAT",
+          "scramble": "AMET",
+          "circles": [
+            0,
+            1,
+            3
+          ]
+        },
+        {
+          "answer": "TREE",
+          "scramble": "ETRE",
+          "circles": [
+            2
+          ]
+        }
+      ],
+      "surprise": {
+        "caption": "When the two runners bumped into each other at the horse races, it turned into a track…",
+        "answer": [
+          "MEET"
+        ],
+        "quoted": [
+          "MEET"
+        ],
+        "explanation": "A running competition is a track MEET — and “meet” sounds just like “meat”, which is why one runner is holding a steak.",
+        "explanation_ru": "«MEET» — спортивный сбор/забег (track meet). Звучит как «meat» (мясо) — поэтому один из бегунов размахивает стейком. Игра на созвучии meet/meat."
+      },
+      "cartoon": {
+        "file": "level-03.png",
+        "prompt": "Cheerful flat-color cartoon illustration for a casual mobile puzzle game, single panel gag comic, bold clean outlines, soft warm palette, simple background. Two cartoon joggers in running gear surprised to bump into each other at a horse racing track, one comically waving a steak. Speech bubble: \"Fancy meeting you here!\". no title, no logo, no header text, no watermark"
+      },
+      "difficulty": {
+        "score": 2.3,
+        "P1": 2,
+        "P2": 4,
+        "P3": 3,
+        "P4": 0.45,
+        "P5": 0,
+        "P6": 4,
+        "P7": "homophone",
+        "P8": 4
+      }
+    },
+    {
+      "id": 4,
+      "virtualLevel": 34,
+      "words": [
+        {
+          "answer": "HEIR",
+          "scramble": "RHIE",
+          "circles": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "answer": "FORCE",
+          "scramble": "CROFE",
+          "circles": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ]
+        }
+      ],
+      "surprise": {
+        "caption": "When the charter pilot’s son took over the family flying business, it became an…",
+        "answer": [
+          "HEIR",
+          "FORCE"
+        ],
+        "quoted": [
+          "HEIR"
+        ],
+        "explanation": "The son who inherits is the HEIR, and “HEIR FORCE” sounds like “air force” — a flying business run by the heir.",
+        "explanation_ru": "«HEIR» — наследник. «HEIR FORCE» произносится как «air force» (военно-воздушные силы). Сын унаследовал авиабизнес — вышли «военно-наследственные силы»."
+      },
+      "cartoon": {
+        "file": "level-04.png",
+        "prompt": "Cheerful flat-color cartoon illustration for a casual mobile puzzle game, single panel gag comic, bold clean outlines, soft warm palette, simple background. A proud young pilot in a tiny propeller plane saluting, wearing a crown, an older pilot handing him the keys. Speech bubble: \"It's all yours, son!\". no title, no logo, no header text, no watermark"
+      },
+      "difficulty": {
+        "score": 3.4,
+        "P1": 2,
+        "P2": 5,
+        "P3": 4,
+        "P4": 0.6,
+        "P5": 1,
+        "P6": 9,
+        "P7": "homophone",
+        "P8": 3
+      }
+    },
+    {
+      "id": 5,
+      "virtualLevel": 45,
+      "words": [
+        {
+          "answer": "HOLD",
+          "scramble": "DLOH",
+          "circles": [
+            2,
+            3
+          ]
+        },
+        {
+          "answer": "BOAT",
+          "scramble": "ATOB",
+          "circles": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "answer": "SHOW",
+          "scramble": "WOHS",
+          "circles": [
+            1
+          ]
+        }
+      ],
+      "surprise": {
+        "caption": "The hat shop’s sales dropped because customers thought the styles were all…",
+        "answer": [
+          "OLD",
+          "HAT"
+        ],
+        "quoted": [],
+        "explanation": "“OLD HAT” is an idiom meaning outdated — fitting for a hat shop whose designs are behind the times.",
+        "explanation_ru": "«OLD HAT» — английская идиома «устаревшее, приевшееся, вчерашний день». Шляпный магазин прогорел, потому что фасоны были старомодными — буквально «старые шляпы»."
+      },
+      "cartoon": {
+        "file": "level-05.png",
+        "prompt": "Cheerful flat-color cartoon illustration for a casual mobile puzzle game, single panel gag comic, bold clean outlines, soft warm palette, simple background. A dusty old-fashioned hat shop with cobwebbed bonnets, a bored shopkeeper, one customer yawning at the styles. Speech bubble: \"Seen it all before!\". no title, no logo, no header text, no watermark"
+      },
+      "difficulty": {
+        "score": 3.0,
+        "P1": 3,
+        "P2": 4,
+        "P3": 3,
+        "P4": 0.33,
+        "P5": 0,
+        "P6": 6,
+        "P7": "idiom",
+        "P8": 4
+      }
+    },
+    {
+      "id": 6,
+      "virtualLevel": 56,
+      "words": [
+        {
+          "answer": "PIER",
+          "scramble": "REIP",
+          "circles": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "answer": "PRESSURE",
+          "scramble": "ESRPRSUE",
+          "circles": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            6
+          ]
+        },
+        {
+          "answer": "GUIDED",
+          "scramble": "UDEGDI",
+          "circles": [
+            1,
+            4
+          ]
+        }
+      ],
+      "surprise": {
+        "caption": "What a wooden boardwalk feels when far too many tourists crowd onto it at once…",
+        "answer": [
+          "PIER",
+          "PRESSURE"
+        ],
+        "quoted": [
+          "PIER"
+        ],
+        "explanation": "A PIER is the boardwalk over water; “PIER PRESSURE” sounds like “peer pressure” — here it's the literal weight of the crowd.",
+        "explanation_ru": "«PIER» — пирс, помост над водой. «PIER PRESSURE» звучит как «peer pressure» (давление сверстников), но здесь это буквальный вес толпы туристов, давящий на пирс."
+      },
+      "cartoon": {
+        "file": "level-06.png",
+        "prompt": "Cheerful flat-color cartoon illustration for a casual mobile puzzle game, single panel gag comic, bold clean outlines, soft warm palette, simple background. A crowded seaside wooden pier bending under a huge crowd of happy tourists, planks creaking, one worried crab below. Speech bubble: \"Room for one more?\". no title, no logo, no header text, no watermark"
+      },
+      "difficulty": {
+        "score": 4.2,
+        "P1": 3,
+        "P2": 6,
+        "P3": 4,
+        "P4": 0.52,
+        "P5": 1,
+        "P6": 12,
+        "P7": "homophone",
+        "P8": 3
+      }
+    },
+    {
+      "id": 7,
+      "virtualLevel": 67,
+      "words": [
+        {
+          "answer": "SIR",
+          "scramble": "RIS",
+          "circles": [
+            1,
+            2
+          ]
+        },
+        {
+          "answer": "PRIZE",
+          "scramble": "ZERPI",
+          "circles": [
+            0,
+            2,
+            4
+          ]
+        },
+        {
+          "answer": "MODEST",
+          "scramble": "SDETOM",
+          "circles": [
+            4
+          ]
+        },
+        {
+          "answer": "AZURE",
+          "scramble": "UAERZ",
+          "circles": [
+            1,
+            3
+          ]
+        }
+      ],
+      "surprise": {
+        "caption": "When the humble gentleman unexpectedly won the distinguished-gentleman contest, everyone called it a…",
+        "answer": [
+          "SIR",
+          "PRIZE"
+        ],
+        "quoted": [
+          "SIR",
+          "PRIZE"
+        ],
+        "explanation": "A knighted man is a SIR, and “SIR PRIZE” is said like “surprise” — the modest gentleman was shocked to win.",
+        "explanation_ru": "«SIR» — сэр, титул. «SIR PRIZE» произносится как «surprise» (сюрприз). Скромный джентльмен неожиданно выиграл приз — вот вам и «сэр-приз»."
+      },
+      "cartoon": {
+        "file": "level-07.png",
+        "prompt": "Cheerful flat-color cartoon illustration for a casual mobile puzzle game, single panel gag comic, bold clean outlines, soft warm palette, simple background. A blushing gentleman with a monocle and top hat, shocked to be handed a golden trophy on a red-carpet stage, confetti falling. Speech bubble: \"Me? Really?!\". no title, no logo, no header text, no watermark"
+      },
+      "difficulty": {
+        "score": 5.0,
+        "P1": 4,
+        "P2": 5,
+        "P3": 5,
+        "P4": 0.5,
+        "P5": 1,
+        "P6": 8,
+        "P7": "double-layer",
+        "P8": 2
+      }
+    },
+    {
+      "id": 8,
+      "virtualLevel": 78,
+      "words": [
+        {
+          "answer": "GAME",
+          "scramble": "EMAG",
+          "circles": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "answer": "SHOW",
+          "scramble": "WOHS",
+          "circles": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "answer": "GUIDED",
+          "scramble": "UDEGDI",
+          "circles": [
+            4
+          ]
+        },
+        {
+          "answer": "SHEEP",
+          "scramble": "EHPES",
+          "circles": [
+            0
+          ]
+        }
+      ],
+      "surprise": {
+        "caption": "What the flashy TV host shot with his camera while on safari turned out to be a…",
+        "answer": [
+          "GAME",
+          "SHOW"
+        ],
+        "quoted": [
+          "GAME"
+        ],
+        "explanation": "Wild safari animals are called “game”, and a “GAME SHOW” is a TV programme — the host “shot” the game with a camera, not a rifle.",
+        "explanation_ru": "«GAME» — это и дичь на сафари, и «GAME SHOW» (телевикторина). Гламурный ведущий «подстрелил» дичь камерой, а не ружьём — получилось телешоу."
+      },
+      "cartoon": {
+        "file": "level-08.png",
+        "prompt": "Cheerful flat-color cartoon illustration for a casual mobile puzzle game, single panel gag comic, bold clean outlines, soft warm palette, simple background. A sparkly TV game-show host in a safari hat filming friendly zebras and giraffes with a camera on the savanna, applause sign glowing. Speech bubble: \"And our next contestant!\". no title, no logo, no header text, no watermark"
+      },
+      "difficulty": {
+        "score": 4.6,
+        "P1": 4,
+        "P2": 5,
+        "P3": 4,
+        "P4": 0.4,
+        "P5": 1,
+        "P6": 8,
+        "P7": "double-layer",
+        "P8": 3
+      }
+    },
+    {
+      "id": 9,
+      "virtualLevel": 89,
+      "words": [
+        {
+          "answer": "SCREEN",
+          "scramble": "NESREC",
+          "circles": [
+            1,
+            3,
+            5
+          ]
+        },
+        {
+          "answer": "TEST",
+          "scramble": "TSTE",
+          "circles": [
+            0,
+            1,
+            3
+          ]
+        },
+        {
+          "answer": "GRASSY",
+          "scramble": "RSGSYA",
+          "circles": [
+            1,
+            3,
+            4
+          ]
+        },
+        {
+          "answer": "HUMBLE",
+          "scramble": "MEHBUL",
+          "circles": [
+            5
+          ]
+        }
+      ],
+      "surprise": {
+        "caption": "The buzzing flies kept landing on the movie set and every one of them was hoping to pass the…",
+        "answer": [
+          "SCREEN",
+          "TEST"
+        ],
+        "quoted": [
+          "SCREEN"
+        ],
+        "explanation": "A SCREEN TEST is an audition for film; the flies want to be on screen — but a window “screen” also keeps flies out, the double joke.",
+        "explanation_ru": "«SCREEN TEST» — кинопроба (проба на экран). Мухи мечтают попасть на экран, но оконная «screen» (москитная сетка) — как раз то, что их не пускает. Двойная игра слов на screen."
+      },
+      "cartoon": {
+        "file": "level-09.png",
+        "prompt": "Cheerful flat-color cartoon illustration for a casual mobile puzzle game, single panel gag comic, bold clean outlines, soft warm palette, simple background. Movie set with a director's chair and clapperboard, cartoon flies wearing sunglasses buzzing hopefully toward a movie camera and a window screen. Speech bubble: \"We're ready for our close-up!\". no title, no logo, no header text, no watermark"
+      },
+      "difficulty": {
+        "score": 5.6,
+        "P1": 4,
+        "P2": 6,
+        "P3": 5,
+        "P4": 0.6,
+        "P5": 1,
+        "P6": 10,
+        "P7": "double-layer",
+        "P8": 2
+      }
+    },
+    {
+      "id": 10,
+      "virtualLevel": 100,
+      "words": [
+        {
+          "answer": "PANE",
+          "scramble": "NEPA",
+          "circles": [
+            1,
+            2
+          ]
+        },
+        {
+          "answer": "RELIEF",
+          "scramble": "LFIREE",
+          "circles": [
+            1,
+            2,
+            5
+          ]
+        },
+        {
+          "answer": "POROUS",
+          "scramble": "RUSOPO",
+          "circles": [
+            0,
+            2
+          ]
+        },
+        {
+          "answer": "SLEIGH",
+          "scramble": "ILGHES",
+          "circles": [
+            2,
+            3
+          ]
+        },
+        {
+          "answer": "TETHER",
+          "scramble": "RHTETE",
+          "circles": [
+            1
+          ]
+        }
+      ],
+      "surprise": {
+        "caption": "When the glazier’s son finally replaced the cracked window that had bothered everyone, the doctor felt sweet…",
+        "answer": [
+          "PANE",
+          "RELIEF"
+        ],
+        "quoted": [
+          "PANE"
+        ],
+        "explanation": "A window PANE, said aloud, is “pain” — so “PANE RELIEF” is “pain relief”. The doctor is relieved the painful (pane-ful) window is fixed.",
+        "explanation_ru": "«PANE» (оконное стекло) звучит как «pain» (боль). «PANE RELIEF» = «pain relief» (обезболивание). Доктор вздохнул с облегчением, когда починили мучившее всех окно — «стекло-болеутоляющее»."
+      },
+      "cartoon": {
+        "file": "level-10.png",
+        "prompt": "Cheerful flat-color cartoon illustration for a casual mobile puzzle game, single panel gag comic, bold clean outlines, soft warm palette, simple background. A weary doctor sighing with relief in a waiting room as sunlight streams through a freshly repaired window, an aspirin bottle on the desk untouched. Speech bubble: \"Ahh, much better.\". no title, no logo, no header text, no watermark"
+      },
+      "difficulty": {
+        "score": 6.8,
+        "P1": 5,
+        "P2": 6,
+        "P3": 6,
+        "P4": 0.7,
+        "P5": 1,
+        "P6": 10,
+        "P7": "double-layer",
+        "P8": 1
+      }
+    }
+  ]
+}
